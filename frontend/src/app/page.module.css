@@ -1,0 +1,15 @@
+.completo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 275px;
+}
+
+.button {
+    display: flex;
+    flex-direction: row;
+}
+
+.texto {
+    font-size: 25px;
+}

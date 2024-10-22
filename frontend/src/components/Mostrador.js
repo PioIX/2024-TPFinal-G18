@@ -5,7 +5,7 @@ export default function Mostrador (props){
 
     return(
         <>
-            <div>
+            <div>   
                 <img src={foto}/>
             </div>
         </>

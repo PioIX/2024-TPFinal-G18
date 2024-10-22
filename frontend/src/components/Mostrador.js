@@ -6,6 +6,7 @@ export default function Mostrador (props){
     return(
         <>
             <div>
+                <h1> Mostrador </h1>
                 <img src={foto}/>
             </div>
         </>

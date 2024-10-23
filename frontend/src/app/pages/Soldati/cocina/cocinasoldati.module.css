@@ -1,0 +1,8 @@
+.imgSoldatiCocina {
+    position: relative; /* Asegura que los elementos hijos se posicionen relativamente */
+    height: 99vh; /* Asegura que ocupe toda la pantalla */
+    width: 100%;
+    background-image: url('/escenarios/cocinas/CocinaSoldati.png'); /* Ruta de la imagen en tu carpeta */
+    background-size: cover;
+    background-position: center;
+}

@@ -1,8 +1,9 @@
 /* Estilo para la imagen de fondo o el contenedor principal */
 .imgSoldati {
     position: relative; /* Asegura que los elementos hijos se posicionen relativamente */
-    height: 100vh; /* Asegura que ocupe toda la pantalla */
-    background-image: url('/escenarios/mostrador/SOLDATI.png'); /* Ruta de la imagen en tu carpeta */
+    height: 99vh; /* Asegura que ocupe toda la pantalla */
+    width: 100%;
+    background-image: url('/escenarios/mostradores/SOLDATI.png'); /* Ruta de la imagen en tu carpeta */
     background-size: cover;
     background-position: center;
 }
@@ -64,4 +65,23 @@
     border-radius: 5px;
     cursor: pointer;
     align-self: flex-end; /* Alinea el botón a la derecha */
+}
+
+.appearImage {
+    position: absolute; /* Asegúrate de que se posicione en relación al contenedor */
+    top: 50%; /* Centra verticalmente */
+    left: -100px; /* Comienza fuera de la pantalla a la izquierda */
+    transform: translate(-50%, -50%); /* Ajusta la posición para que esté centrada */
+    max-width: 600px; /* Cambia el tamaño según tus necesidades */
+    max-height: 600px; /* Cambia el tamaño según tus necesidades */
+    z-index: 10; /* Asegúrate de que aparezca por encima de otros elementos */
+    transition: left 0.5s ease-in-out; /* Agrega una transición suave para el deslizamiento */
+}
+
+.slideIn {
+    left: 20%; /* Desliza hacia el centro de la pantalla */
+}
+
+.slideOut {
+    left: 100%; /* Desliza hacia la derecha, fuera de la pantalla */
 }

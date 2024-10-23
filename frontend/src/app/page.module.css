@@ -2,11 +2,11 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    background-image: url('../public/menu/fondo.png'); /* Ruta de la imagen en tu carpeta */
+    background-image: url('/menu/fondo.png'); /* Ruta de la imagen en tu carpeta */
     background-size: cover; /* Ajusta el tamaño de la imagen para que cubra todo el fondo */
     background-repeat: no-repeat; /* Evita que la imagen se repita */
-    width: 100%; /* Ancho total de la pantalla */
-    height: 100vh; /* Alto total de la pantalla */
+    width: 99.9%; /* Ancho total de la pantalla */
+    height: 98vh; /* Alto total de la pantalla */
 }
 
 
@@ -18,7 +18,9 @@
 
 .texto {
     font-family: 'Bowlby One SC', sans-serif; 
-    font-size: 25px;
+    height: 50px;
+    font-size: 32px;
+    font-weight: 650;
 }
 
 .link {
@@ -28,7 +30,7 @@
 
 .h1 { /* Cambiar .h1 a .titulo para que no confunda con el elemento HTML */
     font-family: 'Bowlby One SC', sans-serif; 
-    font-size: 36px; 
-    font-weight: 400;
+    font-size: 60px; 
+    font-weight: 700;
     color: #000000; 
 }

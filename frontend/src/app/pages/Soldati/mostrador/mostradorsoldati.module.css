@@ -1,11 +1,67 @@
+/* Estilo para la imagen de fondo o el contenedor principal */
 .imgSoldati {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    position: relative; /* Asegura que los elementos hijos se posicionen relativamente */
+    height: 100vh; /* Asegura que ocupe toda la pantalla */
     background-image: url('/escenarios/mostrador/SOLDATI.png'); /* Ruta de la imagen en tu carpeta */
-    background-size: cover; /* Ajusta el tamaño de la imagen para que cubra todo el fondo */
-    background-repeat: no-repeat; /* Evita que la imagen se repita */
-    width: 100%; /* Ancho total de la pantalla */
-    height: 110vh; /* Alto total de la pantalla */
+    background-size: cover;
+    background-position: center;
 }
 
+/* Botón en la esquina inferior izquierda */
+.openModalButton {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    padding: 10px 20px;
+    background-color: #f5a92e; /* Color del botón */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+/* Estilo del modal */
+.modalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5); /* Fondo semitransparente */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999; /* Asegura que esté encima de otros elementos */
+}
+
+.modalContent {
+    background: white;
+    padding: 32px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    width: 350px; /* Ancho del modal */
+}
+
+.textArea {
+    width: 100%;
+    height: 150px;
+    margin-bottom: 10px;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 34px;
+    resize: none; /* Evita redimensionar el textarea */
+}
+
+/* Botón para cerrar el modal */
+.closeModalButton {
+    padding: 10px;
+    background-color: #f44336; /* Color del botón de cerrar */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    align-self: flex-end; /* Alinea el botón a la derecha */
+}

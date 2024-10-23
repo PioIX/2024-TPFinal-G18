@@ -1,11 +1,25 @@
-/* Estilo para la imagen de fondo o el contenedor principal */
+/* Estilo para el contenedor principal con la imagen de fondo */
 .imgSoldati {
-    position: relative; /* Asegura que los elementos hijos se posicionen relativamente */
+    position: relative;
     height: 99vh; /* Asegura que ocupe toda la pantalla */
     width: 100%;
     background-image: url('/escenarios/mostradores/SOLDATI.png'); /* Ruta de la imagen en tu carpeta */
     background-size: cover;
     background-position: center;
+    overflow: hidden; /* Evita que cualquier contenido sobresalga */
+}
+
+/* Estilo para la radio (imagen interactiva) */
+#playImg {
+    width: 120px; /* Ajusta el tamaño de la radio */
+    height: auto; /* Mantiene la proporción de la imagen */
+    position: absolute; /* Posición absoluta para controlarla en la pantalla */
+    top: 470px; /* Ajusta la posición verticalmente */
+    left: 90%; /* Ajusta la posición horizontalmente */
+    cursor: pointer; /* Añade un cursor de mano al pasar por encima */
+    z-index: 100; /* Asegura que esté por encima de otros elementos */
+    transform: translateX(-50%); /* Centra la imagen horizontalmente */
+    pointer-events: auto; /* Habilita los clics solo en esta imagen */
 }
 
 /* Botón en la esquina inferior izquierda */
@@ -14,8 +28,8 @@
     bottom: 20px;
     left: 20px;
     padding: 10px 20px;
-    background-color: #f5a92e; /* Color del botón */
-    color: white;
+    background-color: #febfff; /* Color del botón */
+    color: rgb(0, 0, 0);
     border: none;
     border-radius: 5px;
     cursor: pointer;
@@ -32,7 +46,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 9999; /* Asegura que esté encima de otros elementos */
+    z-index: 9999;
 }
 
 .modalContent {
@@ -42,46 +56,36 @@
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
     display: flex;
     flex-direction: column;
-    width: 350px; /* Ancho del modal */
+    width: 350px;
 }
 
-.textArea {
-    width: 100%;
-    height: 150px;
-    margin-bottom: 10px;
-    padding: 10px;
-    font-size: 16px;
-    border: 1px solid #ccc;
-    border-radius: 34px;
-    resize: none; /* Evita redimensionar el textarea */
+/* Imagen que aparece y desaparece */
+.appearImage {
+    position: absolute;
+    top: 54%;
+    left: -100px;
+    transform: translate(-50%, -50%);
+    max-width: 600px;
+    max-height: 600px;
+    z-index: 10;
+    transition: left 0.7s ease-in-out;
+}
+
+.slideIn {
+    left: 20%;
+}
+
+.slideOut {
+    left: 100%;
 }
 
 /* Botón para cerrar el modal */
 .closeModalButton {
     padding: 10px;
-    background-color: #f44336; /* Color del botón de cerrar */
+    background-color: #f73d30;
     color: white;
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    align-self: flex-end; /* Alinea el botón a la derecha */
-}
-
-.appearImage {
-    position: absolute; /* Asegúrate de que se posicione en relación al contenedor */
-    top: 50%; /* Centra verticalmente */
-    left: -100px; /* Comienza fuera de la pantalla a la izquierda */
-    transform: translate(-50%, -50%); /* Ajusta la posición para que esté centrada */
-    max-width: 600px; /* Cambia el tamaño según tus necesidades */
-    max-height: 600px; /* Cambia el tamaño según tus necesidades */
-    z-index: 10; /* Asegúrate de que aparezca por encima de otros elementos */
-    transition: left 0.5s ease-in-out; /* Agrega una transición suave para el deslizamiento */
-}
-
-.slideIn {
-    left: 20%; /* Desliza hacia el centro de la pantalla */
-}
-
-.slideOut {
-    left: 100%; /* Desliza hacia la derecha, fuera de la pantalla */
+    align-self: flex-end;
 }

@@ -6,7 +6,6 @@ import Form from "@/components/Form";
 import styles from "./page.module.css";
 import { useState } from "react";
 import Link from "next/link";
-import Head from 'next/head';
 import { Bowlby_One_SC } from "next/font/google";
 
 // Importa la fuente de Google correctamente con el peso especificado

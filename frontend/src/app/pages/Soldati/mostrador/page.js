@@ -8,6 +8,7 @@ export default function mostradorLogica() {
     
     return (
         <div className={styles.imgSoldati}>
+            <Mostrador />
         </div>
     );
 }

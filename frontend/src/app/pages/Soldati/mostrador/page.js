@@ -107,6 +107,7 @@ export default function MostradorLogica() {
     return (
         <div className={styles.imgSoldati}>
 
+
         <Score score={score} />
 
             {/* Imagen que aparece y desaparece */}

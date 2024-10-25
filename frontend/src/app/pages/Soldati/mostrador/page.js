@@ -3,37 +3,66 @@
 import { useState, useEffect, useRef } from "react";
 import styles from "./mostradorsoldati.module.css";
 import Mostrador from "@/components/Mostrador"; // Importa el componente desde la carpeta components
+import Score from '@/components/Score';
+
 
 export default function MostradorLogica() {
     const [isModalOpen, setIsModalOpen] = useState(false); // Estado del modal
     const [showImage, setShowImage] = useState(false); // Estado de visibilidad de la imagen
     const [slideIn, setSlideIn] = useState(false); // Control de la animación de entrada
     const [slideOut, setSlideOut] = useState(false); // Control de la animación de salida
+    const [showDialogue, setShowDialogue] = useState(false); // Controla la visibilidad del diálogo
+    const [timeLeft, setTimeLeft] = useState(25); // Tiempo total de visibilidad de la imagen (ahora 25 segundos)
     const [isPlaying, setIsPlaying] = useState(false); // Estado para controlar si la música está sonando
+    const [score, setScore] = useState(0);
+
 
     const playImgRef = useRef(null); // Referencia para la imagen de play
     const soundRef = useRef(null); // Referencia para el audio
 
     useEffect(() => {
-        // Temporizador para mostrar y esconder la imagen
+        // Temporizador para mostrar la imagen y empezar a deslizarse hacia adentro
         const showImageTimer = setTimeout(() => {
             setShowImage(true);
-            setSlideIn(true);
+            setTimeout(() => {
+                setSlideIn(true);
+            }, 100); // Retardo pequeño para que la imagen esté lista antes de la animación
         }, 1000);
 
+        // Temporizador para mostrar el diálogo mientras la imagen está quieta
+        const dialogueTimer = setTimeout(() => {
+            setShowDialogue(true);
+        }, 2000); // El diálogo aparece 2 segundos después de que la imagen entre
+
+        // Temporizador regresivo que disminuye cada segundo basado en el tiempo total de visibilidad
+        const countdownInterval = setInterval(() => {
+            setTimeLeft((prevTime) => {
+                if (prevTime > 0) {
+                    return prevTime - 1;
+                } else {
+                    clearInterval(countdownInterval);
+                    return 0;
+                }
+            });
+        }, 1000);
+
+        // Temporizador para iniciar el deslizamiento hacia afuera
         const hideImageTimer = setTimeout(() => {
-            setSlideIn(false);
-            setSlideOut(true);
+            setSlideIn(false); // Detiene el deslizamiento hacia adentro
+            setSlideOut(true); // Inicia el deslizamiento hacia afuera
+            setShowDialogue(false); // Oculta el diálogo cuando la imagen empieza a deslizarse para salir
             const removeImageTimer = setTimeout(() => {
                 setShowImage(false);
             }, 500);
 
             return () => clearTimeout(removeImageTimer);
-        }, 5000);
+        }, 26000); // La imagen se queda visible durante 25 segundos (añadimos 1000ms por el retardo del diálogo)
 
         return () => {
             clearTimeout(showImageTimer);
             clearTimeout(hideImageTimer);
+            clearTimeout(dialogueTimer);
+            clearInterval(countdownInterval);
         };
     }, []);
 
@@ -73,23 +102,39 @@ export default function MostradorLogica() {
         };
     }, [isPlaying]);
 
+    
+
     return (
         <div className={styles.imgSoldati}>
-            {/* Componente del mostrador */}
-            <Mostrador />
 
-            {/* Imagen que aparecerá y desaparecerá */}
+        <Score score={score} />
+
+            {/* Imagen que aparece y desaparece */}
             {showImage && (
-                <img
-                    src="/clientes/hombreSucio.png"
-                    alt="Hombre Sucio"
-                    className={`${styles.appearImage} ${slideIn ? styles.slideIn : ''} ${slideOut ? styles.slideOut : ''}`}
-                />
+                <div className={styles.characterContainer}>
+                    <img
+                        src="/clientes/hombreSucio.png"
+                        alt="Hombre Sucio"
+                        className={`${styles.appearImage} ${slideIn ? styles.slideIn : ''} ${slideOut ? styles.slideOut : ''}`}
+                    />
+                    
+                    {/* Cuadro de diálogo que aparece cuando la imagen está detenida */}
+                    {showDialogue && (
+                        <div className={styles.dialogueBox}>
+                            <p>
+                                "TENGO HAMBREEE, DAME UN BUDÍN DE CHOCOLATE"
+                                <br />
+                                <span className={styles.timerText}>Tiempo restante: {timeLeft} segundos...</span>
+                            </p>
+                        </div>
+                    )}
+                </div>
             )}
 
             {/* Radio */}
             <img
                 ref={playImgRef}
+                className={styles.imgRadio}
                 src="/objetos/Radio Soldati.png"
                 id="playImg"
                 alt="Play Radio"

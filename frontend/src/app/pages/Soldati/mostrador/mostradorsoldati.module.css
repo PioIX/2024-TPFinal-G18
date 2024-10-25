@@ -62,22 +62,26 @@
 /* Imagen que aparece y desaparece */
 .appearImage {
     position: absolute;
-    top: 54%;
-    left: -100px;
-    transform: translate(-50%, -50%);
-    max-width: 600px;
-    max-height: 600px;
+    top: 460px; /* Centra verticalmente */
+    left: -600px; /* Comienza más afuera de la pantalla */
+    transform: translateY(-50%); /* Centra verticalmente */
+    max-width: 570px;
+    max-height: 570px;
     z-index: 10;
-    transition: left 0.7s ease-in-out;
+    transition: left 1s ease-in-out; /* Suaviza el movimiento */
 }
 
+/* Clase que desliza la imagen hacia adentro */
 .slideIn {
-    left: 20%;
+    left: 20%; /* Detente en el 20% de la pantalla desde la izquierda */
 }
 
+/* Clase que desliza la imagen hacia afuera */
 .slideOut {
-    left: 100%;
+    left: 120%; /* Desliza fuera de la pantalla hacia la derecha */
+    transition: left 0.7s ease-in-out; /* Tiempo y estilo de transición */
 }
+
 
 /* Botón para cerrar el modal */
 .closeModalButton {
@@ -88,4 +92,35 @@
     border-radius: 5px;
     cursor: pointer;
     align-self: flex-end;
+}
+
+/* Contenedor para la imagen y el diálogo */
+.characterContainer {
+    position: relative;
+}
+
+/* Cuadro de diálogo estilo burbuja */
+.dialogueBox {
+    position: absolute;
+    top: 370px; /* Ajusta según necesites para la posición del cuadro de diálogo */
+    left: 60%;
+    transform: translateX(-50%);
+    background-color: rgba(255, 255, 255, 0.8); /* Fondo semitransparente */
+    padding: 10px 15px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    font-size: 14px;
+    color: #333;
+    z-index: 20;
+}
+
+/* Texto del temporizador dentro del cuadro de diálogo */
+.timerText {
+    font-weight: bold;
+    color: red; /* Cambia el color según tu preferencia */
+}
+
+.imgRadio {
+    float: left;
+    margin-left: 470px; /* Adjust as needed */
 }

@@ -76,7 +76,6 @@ export default function MostradorLogica() {
     return (
         <div className={styles.imgSoldati}>
             {/* Componente del mostrador */}
-            <Mostrador />
 
             {/* Imagen que aparecerá y desaparecerá */}
             {showImage && (

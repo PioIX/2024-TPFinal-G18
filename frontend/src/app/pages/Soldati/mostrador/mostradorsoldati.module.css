@@ -62,7 +62,7 @@
 /* Imagen que aparece y desaparece */
 .appearImage {
     position: absolute;
-    top: 54%;
+    top: 50.5%;
     left: -100px;
     transform: translate(-50%, -50%);
     max-width: 600px;

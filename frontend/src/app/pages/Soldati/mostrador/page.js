@@ -2,71 +2,121 @@
 
 import { useState, useEffect, useRef } from "react";
 import styles from "./mostradorsoldati.module.css";
-import Mostrador from "@/components/Mostrador"; // Importa el componente desde la carpeta components
+import Mostrador from "@/components/Mostrador";
 import Score from '@/components/Score';
 
-
 export default function MostradorLogica() {
-    const [isModalOpen, setIsModalOpen] = useState(false); // Estado del modal
-    const [showImage, setShowImage] = useState(false); // Estado de visibilidad de la imagen
-    const [slideIn, setSlideIn] = useState(false); // Control de la animación de entrada
-    const [slideOut, setSlideOut] = useState(false); // Control de la animación de salida
-    const [showDialogue, setShowDialogue] = useState(false); // Controla la visibilidad del diálogo
-    const [timeLeft, setTimeLeft] = useState(25); // Tiempo total de visibilidad de la imagen (ahora 25 segundos)
-    const [isPlaying, setIsPlaying] = useState(false); // Estado para controlar si la música está sonando
+    // Estados para el cliente 1
+    const [showImage1, setShowImage1] = useState(false);
+    const [slideIn1, setSlideIn1] = useState(false);
+    const [slideOut1, setSlideOut1] = useState(false);
+    const [showDialogue1, setShowDialogue1] = useState(false);
+    const [timeLeft1, setTimeLeft1] = useState(25);
+    const [hasReceivedFood1, setHasReceivedFood1] = useState(false); // Nuevo estado
+
+    // Estados para el cliente 2
+    const [showImage2, setShowImage2] = useState(false);
+    const [slideIn2, setSlideIn2] = useState(false);
+    const [slideOut2, setSlideOut2] = useState(false);
+    const [showDialogue2, setShowDialogue2] = useState(false);
+    const [timeLeft2, setTimeLeft2] = useState(30);
+    const [hasReceivedFood2, setHasReceivedFood2] = useState(false); // Nuevo estado
+
+    // Otros estados
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isPlaying, setIsPlaying] = useState(false);
     const [score, setScore] = useState(0);
 
+    const playImgRef = useRef(null);
+    const soundRef = useRef(null);
 
-    const playImgRef = useRef(null); // Referencia para la imagen de play
-    const soundRef = useRef(null); // Referencia para el audio
-
+    // Configuración del cliente 1
     useEffect(() => {
-        // Temporizador para mostrar la imagen y empezar a deslizarse hacia adentro
-        const showImageTimer = setTimeout(() => {
-            setShowImage(true);
-            setTimeout(() => {
-                setSlideIn(true);
-            }, 100); // Retardo pequeño para que la imagen esté lista antes de la animación
+        const showImageTimer1 = setTimeout(() => {
+            setShowImage1(true);
+            setTimeout(() => setSlideIn1(true), 100);
         }, 1000);
 
-        // Temporizador para mostrar el diálogo mientras la imagen está quieta
-        const dialogueTimer = setTimeout(() => {
-            setShowDialogue(true);
-        }, 2000); // El diálogo aparece 2 segundos después de que la imagen entre
+        const dialogueTimer1 = setTimeout(() => setShowDialogue1(true), 2000);
 
-        // Temporizador regresivo que disminuye cada segundo basado en el tiempo total de visibilidad
-        const countdownInterval = setInterval(() => {
-            setTimeLeft((prevTime) => {
-                if (prevTime > 0) {
-                    return prevTime - 1;
-                } else {
-                    clearInterval(countdownInterval);
-                    return 0;
-                }
+        const countdownInterval1 = setInterval(() => {
+            setTimeLeft1(prev => {
+                if (prev > 0) return prev - 1;
+                clearInterval(countdownInterval1);
+                return 0;
             });
         }, 1000);
 
-        // Temporizador para iniciar el deslizamiento hacia afuera
-        const hideImageTimer = setTimeout(() => {
-            setSlideIn(false); // Detiene el deslizamiento hacia adentro
-            setSlideOut(true); // Inicia el deslizamiento hacia afuera
-            setShowDialogue(false); // Oculta el diálogo cuando la imagen empieza a deslizarse para salir
-            const removeImageTimer = setTimeout(() => {
-                setShowImage(false);
-            }, 500);
-
-            return () => clearTimeout(removeImageTimer);
-        }, 26000); // La imagen se queda visible durante 25 segundos (añadimos 1000ms por el retardo del diálogo)
+        const hideImageTimer1 = setTimeout(() => {
+            if (!hasReceivedFood1) {  // Solo se ejecuta si no ha recibido comida
+                setSlideIn1(false);
+                setSlideOut1(true);
+                setShowDialogue1(false);
+                const removeImageTimer1 = setTimeout(() => setShowImage1(false), 500);
+                return () => clearTimeout(removeImageTimer1);
+            }
+        }, 26000);
 
         return () => {
-            clearTimeout(showImageTimer);
-            clearTimeout(hideImageTimer);
-            clearTimeout(dialogueTimer);
-            clearInterval(countdownInterval);
+            clearTimeout(showImageTimer1);
+            clearTimeout(hideImageTimer1);
+            clearTimeout(dialogueTimer1);
+            clearInterval(countdownInterval1);
         };
-    }, []);
+    }, [hasReceivedFood1]);
 
-    // Función para abrir/cerrar el modal
+    // Configuración del cliente 2
+    useEffect(() => {
+        const showImageTimer2 = setTimeout(() => {
+            setShowImage2(true);
+            setTimeout(() => setSlideIn2(true), 100);
+        }, 30000);
+
+        const dialogueTimer2 = setTimeout(() => setShowDialogue2(true), 31000);
+
+        const countdownInterval2 = setInterval(() => {
+            setTimeLeft2(prev => {
+                if (prev > 0) return prev - 1;
+                clearInterval(countdownInterval2);
+                return 0;
+            });
+        }, 1000);
+
+        const hideImageTimer2 = setTimeout(() => {
+            if (!hasReceivedFood2) {
+                setSlideIn2(false);
+                setSlideOut2(true);
+                setShowDialogue2(false);
+                const removeImageTimer2 = setTimeout(() => setShowImage2(false), 500);
+                return () => clearTimeout(removeImageTimer2);
+            }
+        }, 61000);
+
+        return () => {
+            clearTimeout(showImageTimer2);
+            clearTimeout(hideImageTimer2);
+            clearTimeout(dialogueTimer2);
+            clearInterval(countdownInterval2);
+        };
+    }, [hasReceivedFood2]);
+
+    // Función para entregar el budín a un cliente
+    const handleGiveFood = () => {
+        if (showImage1 && !hasReceivedFood1) {
+            setHasReceivedFood1(true);
+            setSlideIn1(false);
+            setSlideOut1(true);
+            setShowDialogue1(false);
+            setTimeout(() => setShowImage1(false), 500);
+        } else if (showImage2 && !hasReceivedFood2) {
+            setHasReceivedFood2(true);
+            setSlideIn2(false);
+            setSlideOut2(true);
+            setShowDialogue2(false);
+            setTimeout(() => setShowImage2(false), 500);
+        }
+    };
+
     const toggleModal = () => {
         setIsModalOpen(!isModalOpen);
     };
@@ -78,11 +128,9 @@ export default function MostradorLogica() {
             }
 
             if (isPlaying) {
-                // Si la música está sonando, pausa
                 soundRef.current.pause();
                 setIsPlaying(false);
             } else {
-                // Si la música no está sonando, comienza a reproducir
                 soundRef.current.play();
                 setIsPlaying(true);
             }
@@ -94,7 +142,6 @@ export default function MostradorLogica() {
             playImgElement.addEventListener('click', handlePlayPause);
         }
 
-        // Limpia los listeners al desmontar el componente
         return () => {
             if (playImgElement) {
                 playImgElement.removeEventListener('click', handlePlayPause);
@@ -102,35 +149,58 @@ export default function MostradorLogica() {
         };
     }, [isPlaying]);
 
-    
-
     return (
         <div className={styles.imgSoldati}>
 
+            <Score score={score} />
 
-        <Score score={score} />
-
-            {/* Imagen que aparece y desaparece */}
-            {showImage && (
+            {/* Cliente 1 */}
+            {showImage1 && (
                 <div className={styles.characterContainer}>
                     <img
                         src="/clientes/hombreSucio.png"
-                        alt="Hombre Sucio"
-                        className={`${styles.appearImage} ${slideIn ? styles.slideIn : ''} ${slideOut ? styles.slideOut : ''}`}
+                        alt="Cliente 1"
+                        className={`${styles.appearImage} ${slideIn1 ? styles.slideIn : ''} ${slideOut1 ? styles.slideOut : ''}`}
                     />
-                    
-                    {/* Cuadro de diálogo que aparece cuando la imagen está detenida */}
-                    {showDialogue && (
+                    {showDialogue1 && (
                         <div className={styles.dialogueBox}>
                             <p>
                                 "TENGO HAMBREEE, DAME UN BUDÍN DE CHOCOLATE"
                                 <br />
-                                <span className={styles.timerText}>Tiempo restante: {timeLeft} segundos...</span>
+                                <span className={styles.timerText}>Tiempo restante: {timeLeft1} segundos...</span>
                             </p>
                         </div>
                     )}
                 </div>
             )}
+
+            {/* Cliente 2 */}
+            {showImage2 && (
+                <div className={styles.characterContainer}>
+                    <img
+                        src="/clientes/hombreChorro.png"
+                        alt="Cliente 2"
+                        className={`${styles.appearImage} ${slideIn2 ? styles.slideIn : ''} ${slideOut2 ? styles.slideOut : ''} ${styles.largerImage}`}
+                    />
+                    {showDialogue2 && (
+                        <div className={styles.dialogueBox}>
+                            <p>
+                                "¡Dame un budín, rápido!"
+                                <br />
+                                <span className={styles.timerText}>Tiempo restante: {timeLeft2} segundos...</span>
+                            </p>
+                        </div>
+                    )}
+                </div>
+            )}
+
+            {/* Imagen del Budín */}
+            <img
+                src="/objetos/budinLimonSoldati.png"
+                alt="Budín de Limón"
+                className={styles.budinImage}
+                onClick={handleGiveFood} // Acción al hacer clic en el budín
+            />
 
             {/* Radio */}
             <img
@@ -149,7 +219,7 @@ export default function MostradorLogica() {
                 Recetas
             </button>
 
-            {/* Modal flotante con el área de texto no editable */}
+            {/* Modal con recetas */}
             {isModalOpen && (
                 <div className={styles.modalOverlay}>
                     <div className={styles.modalContent}>

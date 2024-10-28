@@ -8,7 +8,6 @@ export default function cocinaLogica() {
     
     return (
         <div className={styles.imgSoldatiCocina}>
-            <Cocina />
         </div>
     );
 }

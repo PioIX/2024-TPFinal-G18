@@ -124,3 +124,8 @@
     float: left;
     margin-left: 470px; /* Adjust as needed */
 }
+
+.largerImage {
+    transform: scale(2.2); /* Ajusta el valor según el tamaño deseado */
+    top: 328px;
+}

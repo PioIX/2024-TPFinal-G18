@@ -85,7 +85,10 @@ export default function MostradorLogica() {
                 setSlideIn2(false);
                 setSlideOut2(true);
                 setShowDialogue2(false);
-                const removeImageTimer2 = setTimeout(() => setShowImage2(false), 500);
+                const removeImageTimer2 = setTimeout(() => {
+                    setShowImage2(false);
+                    setShowDialogue2(false); // Asegúrate de que el diálogo esté oculto
+                }, 500);
                 return () => clearTimeout(removeImageTimer2);
             }
         }, 61000);
@@ -110,19 +113,26 @@ export default function MostradorLogica() {
     // Función para hacer clic en el cliente y que se vaya si ha recibido comida
     const handleClientClick = (clientNumber) => {
         if (clientNumber === 1 && hasReceivedFood1) {
-            setScore(prevScore => prevScore + 10); // Incrementa el puntaje al cumplir la interacción
+            setScore(prevScore => prevScore + 50); // Incrementa el puntaje al cumplir la interacción
             setSlideIn1(false);
             setSlideOut1(true);
-            setShowDialogue1(false);
-            setTimeout(() => setShowImage1(false), 500);
+            setShowDialogue1(false); // Oculta el diálogo al irse el cliente
+            setTimeout(() => {
+                setShowImage1(false);
+                setShowDialogue1(false); // Asegúrate de que el diálogo esté oculto
+            }, 500);
         } else if (clientNumber === 2 && hasReceivedFood2) {
-            setScore(prevScore => prevScore + 10);
+            setScore(prevScore => prevScore + 30);
             setSlideIn2(false);
             setSlideOut2(true);
-            setShowDialogue2(false);
-            setTimeout(() => setShowImage2(false), 500);
+            setShowDialogue2(false); // Oculta el diálogo al irse el cliente
+            setTimeout(() => {
+                setShowImage2(false);
+                setShowDialogue2(false); // Asegúrate de que el diálogo esté oculto
+            }, 500);
         }
     };
+    
 
     return (
         <div className={styles.imgSoldati}>
@@ -143,7 +153,7 @@ export default function MostradorLogica() {
             <Cliente
                 src="/clientes/hombreChorro.png"
                 alt="Cliente 2"
-                dialogue="¡Dame un budín, rápido!"
+                dialogue="¡Dame un budín de limón, rápido!"
                 showImage={showImage2}
                 slideIn={slideIn2}
                 slideOut={slideOut2}
@@ -156,7 +166,14 @@ export default function MostradorLogica() {
                 src="/objetos/budinLimonSoldati.png"
                 alt="Budín de Limón"
                 className={styles.budinImageContainer}
-                onClick={handleGiveFood} 
+                onClick={handleGiveFood}
+            />
+
+            <img
+                src="/objetos/budinChocolateSoldati.png"
+                alt="Budín de Chocolate"
+                className={styles.budinImageChocolate}
+                onClick={handleGiveFood}
             />
             {/* Radio */}
             <img

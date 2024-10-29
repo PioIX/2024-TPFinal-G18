@@ -132,9 +132,18 @@
 
 .budinImageContainer {
     position: absolute; /* Cambia a absolute para poder moverlo */
-    top: 550px; /* Ajusta según necesites */
-    right: 1000px; /* Ajusta según necesites */
-    width: 550px; /* Cambia el tamaño si es necesario */
+    top: 590px; /* Ajusta según necesites */
+    right: 830px; /* Ajusta según necesites */
+    width: 350px; /* Cambia el tamaño si es necesario */
     cursor: pointer;
     z-index: 30; /* Asegúrate de que esté frente a los clientes */
+}
+
+.budinImageChocolate {
+    position: absolute;
+    top: 584px;
+    right: 1200px;
+    width: 350px;
+    cursor: pointer;
+    z-index: 30;
 }

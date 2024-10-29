@@ -6,13 +6,13 @@
 
 .appearImage {
     position: absolute;
-    top: 270px;
+    top: 286px;
     left: -600px;
     max-width: 570px;
     max-height: 570px;
     z-index: 10;
     transition: left 1s ease-in-out;
-    height: 380px;
+    height: 365px;
     width: 600px;
 }
 

@@ -4,15 +4,18 @@ import { useState, useEffect, useRef } from "react";
 import styles from "./mostradorsoldati.module.css";
 import Mostrador from "@/components/Mostrador";
 import Score from '@/components/Score';
+import Cliente from "@/components/Clientes";
 
 export default function MostradorLogica() {
+    const [score, setScore] = useState(0); // Definimos el estado para el puntaje
+
     // Estados para el cliente 1
     const [showImage1, setShowImage1] = useState(false);
     const [slideIn1, setSlideIn1] = useState(false);
     const [slideOut1, setSlideOut1] = useState(false);
     const [showDialogue1, setShowDialogue1] = useState(false);
     const [timeLeft1, setTimeLeft1] = useState(25);
-    const [hasReceivedFood1, setHasReceivedFood1] = useState(false); // Nuevo estado
+    const [hasReceivedFood1, setHasReceivedFood1] = useState(false); 
 
     // Estados para el cliente 2
     const [showImage2, setShowImage2] = useState(false);
@@ -20,12 +23,7 @@ export default function MostradorLogica() {
     const [slideOut2, setSlideOut2] = useState(false);
     const [showDialogue2, setShowDialogue2] = useState(false);
     const [timeLeft2, setTimeLeft2] = useState(30);
-    const [hasReceivedFood2, setHasReceivedFood2] = useState(false); // Nuevo estado
-
-    // Otros estados
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [isPlaying, setIsPlaying] = useState(false);
-    const [score, setScore] = useState(0);
+    const [hasReceivedFood2, setHasReceivedFood2] = useState(false); 
 
     const playImgRef = useRef(null);
     const soundRef = useRef(null);
@@ -48,7 +46,7 @@ export default function MostradorLogica() {
         }, 1000);
 
         const hideImageTimer1 = setTimeout(() => {
-            if (!hasReceivedFood1) {  // Solo se ejecuta si no ha recibido comida
+            if (!hasReceivedFood1) {  
                 setSlideIn1(false);
                 setSlideOut1(true);
                 setShowDialogue1(false);
@@ -100,16 +98,25 @@ export default function MostradorLogica() {
         };
     }, [hasReceivedFood2]);
 
-    // Función para entregar el budín a un cliente
+    // Función para entregar el budín al cliente
     const handleGiveFood = () => {
         if (showImage1 && !hasReceivedFood1) {
             setHasReceivedFood1(true);
+        } else if (showImage2 && !hasReceivedFood2) {
+            setHasReceivedFood2(true);
+        }
+    };
+
+    // Función para hacer clic en el cliente y que se vaya si ha recibido comida
+    const handleClientClick = (clientNumber) => {
+        if (clientNumber === 1 && hasReceivedFood1) {
+            setScore(prevScore => prevScore + 10); // Incrementa el puntaje al cumplir la interacción
             setSlideIn1(false);
             setSlideOut1(true);
             setShowDialogue1(false);
             setTimeout(() => setShowImage1(false), 500);
-        } else if (showImage2 && !hasReceivedFood2) {
-            setHasReceivedFood2(true);
+        } else if (clientNumber === 2 && hasReceivedFood2) {
+            setScore(prevScore => prevScore + 10);
             setSlideIn2(false);
             setSlideOut2(true);
             setShowDialogue2(false);
@@ -117,128 +124,48 @@ export default function MostradorLogica() {
         }
     };
 
-    const toggleModal = () => {
-        setIsModalOpen(!isModalOpen);
-    };
-
-    useEffect(() => {
-        const handlePlayPause = () => {
-            if (!soundRef.current) {
-                soundRef.current = new Audio('/sound/Los Hijos del Sol - Carñito.mp3');
-            }
-
-            if (isPlaying) {
-                soundRef.current.pause();
-                setIsPlaying(false);
-            } else {
-                soundRef.current.play();
-                setIsPlaying(true);
-            }
-        };
-
-        const playImgElement = playImgRef.current;
-
-        if (playImgElement) {
-            playImgElement.addEventListener('click', handlePlayPause);
-        }
-
-        return () => {
-            if (playImgElement) {
-                playImgElement.removeEventListener('click', handlePlayPause);
-            }
-        };
-    }, [isPlaying]);
-
     return (
         <div className={styles.imgSoldati}>
-
             <Score score={score} />
 
-            {/* Cliente 1 */}
-            {showImage1 && (
-                <div className={styles.characterContainer}>
-                    <img
-                        src="/clientes/hombreSucio.png"
-                        alt="Cliente 1"
-                        className={`${styles.appearImage} ${slideIn1 ? styles.slideIn : ''} ${slideOut1 ? styles.slideOut : ''}`}
-                    />
-                    {showDialogue1 && (
-                        <div className={styles.dialogueBox}>
-                            <p>
-                                "TENGO HAMBREEE, DAME UN BUDÍN DE CHOCOLATE"
-                                <br />
-                                <span className={styles.timerText}>Tiempo restante: {timeLeft1} segundos...</span>
-                            </p>
-                        </div>
-                    )}
-                </div>
-            )}
+            <Cliente
+                src="/clientes/hombreSucio.png"
+                alt="Cliente 1"
+                dialogue="TENGO HAMBREEE, DAME UN BUDÍN DE CHOCOLATE"
+                showImage={showImage1}
+                slideIn={slideIn1}
+                slideOut={slideOut1}
+                showDialogue={showDialogue1}
+                timeLeft={timeLeft1}
+                onClientClick={() => handleClientClick(1)}
+            />
 
-            {/* Cliente 2 */}
-            {showImage2 && (
-                <div className={styles.characterContainer}>
-                    <img
-                        src="/clientes/hombreChorro.png"
-                        alt="Cliente 2"
-                        className={`${styles.appearImage} ${slideIn2 ? styles.slideIn : ''} ${slideOut2 ? styles.slideOut : ''} ${styles.largerImage}`}
-                    />
-                    {showDialogue2 && (
-                        <div className={styles.dialogueBox}>
-                            <p>
-                                "¡Dame un budín, rápido!"
-                                <br />
-                                <span className={styles.timerText}>Tiempo restante: {timeLeft2} segundos...</span>
-                            </p>
-                        </div>
-                    )}
-                </div>
-            )}
+            <Cliente
+                src="/clientes/hombreChorro.png"
+                alt="Cliente 2"
+                dialogue="¡Dame un budín, rápido!"
+                showImage={showImage2}
+                slideIn={slideIn2}
+                slideOut={slideOut2}
+                showDialogue={showDialogue2}
+                timeLeft={timeLeft2}
+                onClientClick={() => handleClientClick(2)}
+            />
 
-            {/* Imagen del Budín */}
             <img
                 src="/objetos/budinLimonSoldati.png"
                 alt="Budín de Limón"
-                className={styles.budinImage}
-                onClick={handleGiveFood} // Acción al hacer clic en el budín
+                className={styles.budinImageContainer}
+                onClick={handleGiveFood} 
             />
-
             {/* Radio */}
             <img
-                ref={playImgRef}
-                className={styles.imgRadio}
-                src="/objetos/Radio Soldati.png"
-                id="playImg"
-                alt="Play Radio"
-            />
-
-            {/* Botón para abrir modal */}
-            <button 
-                className={styles.openModalButton} 
-                onClick={toggleModal}
-            >
-                Recetas
-            </button>
-
-            {/* Modal con recetas */}
-            {isModalOpen && (
-                <div className={styles.modalOverlay}>
-                    <div className={styles.modalContent}>
-                        <div className={styles.nonEditableText}>
-                            {"Masa + Cacao + Chips de chocolate = Budín de chocolate\nMasa + Esencia de vainilla + limón = Budín de vainilla"
-                                .split('\n')
-                                .map((line, index) => (
-                                    <p key={index}>{line}</p>
-                                ))}
-                        </div>
-                        <button 
-                            className={styles.closeModalButton} 
-                            onClick={toggleModal}
-                        >
-                            Cerrar
-                        </button>
-                    </div>
-                </div>
-            )}
-        </div>
-    );
+            ref={playImgRef}
+            className={styles.imgRadio}
+            src="/objetos/Radio Soldati.png"
+            id="playImg"
+            alt="Play Radio"
+        />
+  </div>
+);
 }

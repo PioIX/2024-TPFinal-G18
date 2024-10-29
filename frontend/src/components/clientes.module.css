@@ -1,0 +1,44 @@
+/* cliente.module.css */
+
+.characterContainer {
+    position: relative;
+}
+
+.appearImage {
+    position: absolute;
+    top: 270px;
+    left: -600px;
+    max-width: 570px;
+    max-height: 570px;
+    z-index: 10;
+    transition: left 1s ease-in-out;
+    height: 380px;
+    width: 600px;
+}
+
+.slideIn {
+    left: 20%;
+}
+
+.slideOut {
+    left: 120%;
+    transition: left 0.7s ease-in-out;
+}
+
+.dialogueBox {
+    position: absolute;
+    top: 370px;
+    left: 60%;
+    transform: translateX(-50%);
+    background-color: rgba(255, 255, 255, 0.8);
+    padding: 10px 15px;
+    border-radius: 10px;
+    font-size: 14px;
+    color: #333;
+    z-index: 20;
+}
+
+.timerText {
+    font-weight: bold;
+    color: red;
+}

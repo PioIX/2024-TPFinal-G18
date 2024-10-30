@@ -28,35 +28,63 @@
     bottom: 20px;
     left: 20px;
     padding: 10px 20px;
-    background-color: #febfff; /* Color del botón */
+    background-color: #febfff;
     color: rgb(0, 0, 0);
     border: none;
     border-radius: 5px;
     cursor: pointer;
+    z-index: 10;
+    font-size: 16px;
 }
 
-/* Estilo del modal */
+/* Estilo del modal centrado en la pantalla */
 .modalOverlay {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.5); /* Fondo semitransparente */
+    background: rgba(0, 0, 0, 0.5);
     display: flex;
     justify-content: center;
     align-items: center;
     z-index: 9999;
 }
 
+/* Contenido del modal centrado */
 .modalContent {
     background: white;
-    padding: 32px;
+    padding: 20px;
     border-radius: 10px;
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+    width: 300px;
+    max-height: 300px;
+    overflow-y: auto;
     display: flex;
     flex-direction: column;
-    width: 350px;
+    font-size: 14px;
+    position: relative; /* Para ubicar el botón de cierre de manera absoluta */
+}
+
+/* Botón para cerrar el modal alineado al texto */
+.closeModalButton {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    padding: 6px;
+    background-color: #f73d30;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    z-index: 10;
+}
+
+/* Contenedor de texto alineado con el botón de cierre */
+.modalText {
+    margin-top: 0; /* Elimina el espacio superior */
+    padding-top: 5px; /* Ajusta la alineación con el botón de cerrar */
+    line-height: 1.5;
 }
 
 /* Imagen que aparece y desaparece */
@@ -122,7 +150,12 @@
 
 .imgRadio {
     float: left;
-    margin-left: 470px; /* Adjust as needed */
+    margin-left: 450px; /* Adjust as needed */
+    top: 780px;
+    left: 800px;
+    width: 220px;
+    height: 130px;
+    z-index: 30;
 }
 
 .largerImage {
@@ -146,4 +179,47 @@
     width: 350px;
     cursor: pointer;
     z-index: 30;
+}
+
+.cajaRegistradora {
+    position: absolute;
+    top: 580px;
+    left: 800px;
+    width: 400px;
+    z-index: 30;
+}
+
+.persiana {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 0;
+    background-color: rgba(0, 0, 0, 0.8);
+    background-image: url('/objetos/cortina.png');
+    background-size: cover; /* Asegura que la textura cubra todo el ancho */
+    background-repeat: no-repeat;
+    overflow: hidden;
+    z-index: 10; /* Asegura que esté detrás del budín y la radio */
+    transition: height 0.6s ease-in-out;
+}
+
+/* Clase que controla la altura de la persiana cuando está "cerrada" */
+.persiana.abierta {
+    height: 73vh; /* Baja hasta un poco más de la mitad */
+}
+
+/* Botón para abrir y cerrar la persiana */
+.persianaButton {
+    position: fixed;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #8e8888;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 10px;
+    cursor: pointer;
+    z-index: 9999; /* Asegura que esté sobre la persiana */
 }

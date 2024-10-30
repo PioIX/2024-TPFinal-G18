@@ -8,6 +8,18 @@ import Cliente from "@/components/Clientes";
 
 export default function MostradorLogica() {
     const [score, setScore] = useState(0); // Definimos el estado para el puntaje
+    const [showRecipeModal, setShowRecipeModal] = useState(false); // Estado para el modal de recetas
+    const [persianaAbierta, setPersianaAbierta] = useState(false);
+
+    // Función para abrir o cerrar la persiana
+    const togglePersiana = () => {
+        setPersianaAbierta(!persianaAbierta);
+    };
+    
+    // Función para abrir/cerrar el modal de recetas
+    const toggleRecipeModal = () => {
+        setShowRecipeModal(!showRecipeModal);
+    };
 
     // Estados para el cliente 1
     const [showImage1, setShowImage1] = useState(false);
@@ -63,23 +75,29 @@ export default function MostradorLogica() {
         };
     }, [hasReceivedFood1]);
 
-    // Configuración del cliente 2
+    //Configuracion Cliente 2
     useEffect(() => {
         const showImageTimer2 = setTimeout(() => {
             setShowImage2(true);
             setTimeout(() => setSlideIn2(true), 100);
+    
+            // Inicializa el tiempo restante al aparecer el cliente
+            setTimeLeft2(30);
         }, 30000);
-
+    
+        // Mostrar diálogo después de que el cliente aparece
         const dialogueTimer2 = setTimeout(() => setShowDialogue2(true), 31000);
-
+    
+        // Iniciar el contador solo cuando el cliente está visible y con tiempo inicializado
         const countdownInterval2 = setInterval(() => {
             setTimeLeft2(prev => {
                 if (prev > 0) return prev - 1;
-                clearInterval(countdownInterval2);
+                clearInterval(countdownInterval2); // Detiene el contador al llegar a 0
                 return 0;
             });
         }, 1000);
-
+    
+        // Configuración para ocultar el cliente después de un tiempo
         const hideImageTimer2 = setTimeout(() => {
             if (!hasReceivedFood2) {
                 setSlideIn2(false);
@@ -87,12 +105,12 @@ export default function MostradorLogica() {
                 setShowDialogue2(false);
                 const removeImageTimer2 = setTimeout(() => {
                     setShowImage2(false);
-                    setShowDialogue2(false); // Asegúrate de que el diálogo esté oculto
+                    setShowDialogue2(false);
                 }, 500);
                 return () => clearTimeout(removeImageTimer2);
             }
         }, 61000);
-
+    
         return () => {
             clearTimeout(showImageTimer2);
             clearTimeout(hideImageTimer2);
@@ -100,6 +118,7 @@ export default function MostradorLogica() {
             clearInterval(countdownInterval2);
         };
     }, [hasReceivedFood2]);
+    
 
     // Función para entregar el budín al cliente
     const handleGiveFood = () => {
@@ -162,6 +181,28 @@ export default function MostradorLogica() {
                 onClientClick={() => handleClientClick(2)}
             />
 
+            {/* Botón de recetas */}
+            <button onClick={toggleRecipeModal} className={styles.openModalButton}>
+                Recetas
+            </button>
+
+            {/* Modal de recetas */}
+            {showRecipeModal && (
+                <div className={styles.modalOverlay}>
+                    <div className={styles.modalContent}>
+                        <button onClick={toggleRecipeModal} className={styles.closeModalButton}>
+                            X
+                        </button>
+                        <h3>Recetas</h3>
+                        <ul>
+                            <li>Budín de Chocolate: Masa + chocolate + chips (horno)</li>
+                            <li>Budín de Limón: Masa + vainilla + limon (horno)</li>
+                        </ul>
+                    </div>
+                </div>
+            )}
+
+
             <img
                 src="/objetos/budinLimonSoldati.png"
                 alt="Budín de Limón"
@@ -182,7 +223,28 @@ export default function MostradorLogica() {
             src="/objetos/Radio Soldati.png"
             id="playImg"
             alt="Play Radio"
-        />
+            />
+
+            <img
+            src="/objetos/cajaRegistradoraSoldati.png"
+            alt="Caja registradora"
+            className={styles.cajaRegistadora}
+            />
+
+        <div>
+            {/* Persiana */}
+            <div className={`${styles.persiana} ${persianaAbierta ? styles.abierta : ""}`}></div>
+
+            {/* Botón para abrir/cerrar persiana */}
+            <button className={styles.persianaButton} onClick={togglePersiana}>
+                {persianaAbierta ? "Subir Persiana" : "Bajar Persiana"}
+            </button>
+
+            {/* Contenido restante */}
+            <div className={styles.imgSoldati}>
+                {/* Otros elementos de tu componente */}
+            </div>
+        </div>
   </div>
 );
 }

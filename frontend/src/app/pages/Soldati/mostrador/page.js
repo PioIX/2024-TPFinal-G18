@@ -10,11 +10,6 @@ export default function MostradorLogica() {
     const [score, setScore] = useState(0); // Definimos el estado para el puntaje
     const [showRecipeModal, setShowRecipeModal] = useState(false); // Estado para el modal de recetas
     const [persianaAbierta, setPersianaAbierta] = useState(false);
-
-    // Función para abrir o cerrar la persiana
-    const togglePersiana = () => {
-        setPersianaAbierta(!persianaAbierta);
-    };
     
     // Función para abrir/cerrar el modal de recetas
     const toggleRecipeModal = () => {
@@ -36,6 +31,15 @@ export default function MostradorLogica() {
     const [showDialogue2, setShowDialogue2] = useState(false);
     const [timeLeft2, setTimeLeft2] = useState(30);
     const [hasReceivedFood2, setHasReceivedFood2] = useState(false); 
+
+    // Estados para el policia
+    const [showImage3, setShowImage3] = useState(false);
+    const [slideIn3, setSlideIn3] = useState(false);
+    const [slideOut3, setSlideOut3] = useState(false);
+    const [showDialogue3, setShowDialogue3] = useState(false);
+    const [timeLeft3, setTimeLeft3] = useState(5);
+    const [hasClosedPersiana, setHasClosedPersiana] = useState(false);
+
 
     const playImgRef = useRef(null);
     const soundRef = useRef(null);
@@ -61,7 +65,7 @@ export default function MostradorLogica() {
             if (!hasReceivedFood1) {  
                 setSlideIn1(false);
                 setSlideOut1(true);
-                setShowDialogue1(false);
+                setShowDialogue1(false); // Oculta el diálogo cuando el cliente se va automáticamente
                 const removeImageTimer1 = setTimeout(() => setShowImage1(false), 500);
                 return () => clearTimeout(removeImageTimer1);
             }
@@ -119,6 +123,54 @@ export default function MostradorLogica() {
         };
     }, [hasReceivedFood2]);
     
+    
+    // Configuración del cliente 3
+    useEffect(() => {
+        const showImageTimer3 = setTimeout(() => {
+            setShowImage3(true);
+            setTimeout(() => setSlideIn3(true), 100);
+        }, 61000); // Aparece después de los dos primeros
+    
+        const dialogueTimer3 = setTimeout(() => setShowDialogue3(true), 62000);
+    
+        // Temporizador para el cliente 3
+        const countdownInterval3 = setInterval(() => {
+            setTimeLeft3(prev => {
+                if (prev > 0) return prev - 1;
+                clearInterval(countdownInterval3);
+                return 0;
+            });
+        }, 1000);
+    
+        // Ocultar cliente 3 después de 5 segundos si la persiana está cerrada
+        const hideImageTimer3 = setTimeout(() => {
+            setSlideIn3(false);
+            setSlideOut3(true);
+            setShowDialogue3(false);
+            setShowImage3(false);
+        }, 66000); // Se oculta después de 5 segundos de estar visible
+    
+        const removeImageTimer3 = setTimeout(() => {
+            setShowImage3(false);
+        }, 5000); // Elimina la imagen después de 5 segundos
+    
+        return () => {
+            clearTimeout(showImageTimer3);
+            clearTimeout(dialogueTimer3);
+            clearInterval(countdownInterval3);
+            clearTimeout(hideImageTimer3);
+            clearTimeout(removeImageTimer3);
+        };
+    }, [hasClosedPersiana]); // Asegúrate de que esto esté en el arreglo de dependencias
+
+    // Modifica togglePersiana para registrar si se cerró cuando aparece el cliente 3
+    const togglePersiana = () => {
+        setPersianaAbierta(!persianaAbierta);
+        if (!persianaAbierta && showImage3) {
+            setHasClosedPersiana(true);
+        }
+    };
+    
 
     // Función para entregar el budín al cliente
     const handleGiveFood = () => {
@@ -129,16 +181,14 @@ export default function MostradorLogica() {
         }
     };
 
-    // Función para hacer clic en el cliente y que se vaya si ha recibido comida
     const handleClientClick = (clientNumber) => {
         if (clientNumber === 1 && hasReceivedFood1) {
-            setScore(prevScore => prevScore + 50); // Incrementa el puntaje al cumplir la interacción
+            setScore(prevScore => prevScore + 50);
             setSlideIn1(false);
             setSlideOut1(true);
-            setShowDialogue1(false); // Oculta el diálogo al irse el cliente
             setTimeout(() => {
                 setShowImage1(false);
-                setShowDialogue1(false); // Asegúrate de que el diálogo esté oculto
+                setShowDialogue1(false); // Oculta el diálogo después de que el cliente se va
             }, 500);
         } else if (clientNumber === 2 && hasReceivedFood2) {
             setScore(prevScore => prevScore + 30);
@@ -180,6 +230,18 @@ export default function MostradorLogica() {
                 timeLeft={timeLeft2}
                 onClientClick={() => handleClientClick(2)}
             />
+
+            <Cliente
+                src="/clientes/Policia.png"
+                alt="Cliente 3"
+                dialogue="¡Necesito ver los papeles del negocio!"
+                showImage={showImage3}
+                slideIn={slideIn3}
+                slideOut={slideOut3}
+                showDialogue={showDialogue3}
+                timeLeft={timeLeft3}
+            />
+
 
             {/* Botón de recetas */}
             <button onClick={toggleRecipeModal} className={styles.openModalButton}>
@@ -228,7 +290,7 @@ export default function MostradorLogica() {
             <img
             src="/objetos/cajaRegistradoraSoldati.png"
             alt="Caja registradora"
-            className={styles.cajaRegistadora}
+            className={styles.imgCajaRegistradora}
             />
 
         <div>

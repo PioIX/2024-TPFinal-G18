@@ -149,12 +149,11 @@
 }
 
 .imgRadio {
-    float: left;
-    margin-left: 450px; /* Adjust as needed */
-    top: 780px;
-    left: 800px;
-    width: 220px;
-    height: 130px;
+    position: absolute;
+    top: 480px;
+    left: 1190px;
+    width: 450px;
+    height: 280px;
     z-index: 30;
 }
 
@@ -181,11 +180,12 @@
     z-index: 30;
 }
 
-.cajaRegistradora {
+.imgCajaRegistradora {
     position: absolute;
-    top: 580px;
-    left: 800px;
-    width: 400px;
+    top: 470px;
+    width: 580px;
+    height: 325px;
+    left: 840px;
     z-index: 30;
 }
 

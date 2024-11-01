@@ -23,6 +23,7 @@ export default function MostradorLogica() {
     const [showDialogue1, setShowDialogue1] = useState(false);
     const [timeLeft1, setTimeLeft1] = useState(25);
     const [hasReceivedFood1, setHasReceivedFood1] = useState(false); 
+    const [farewellDialogue1, setFarewellDialogue1] = useState(false);
 
     // Estados para el cliente 2
     const [showImage2, setShowImage2] = useState(false);
@@ -31,6 +32,7 @@ export default function MostradorLogica() {
     const [showDialogue2, setShowDialogue2] = useState(false);
     const [timeLeft2, setTimeLeft2] = useState(30);
     const [hasReceivedFood2, setHasReceivedFood2] = useState(false); 
+    const [farewellDialogue2, setFarewellDialogue2] = useState(false);
 
     // Estados para el policia
     const [showImage3, setShowImage3] = useState(false);
@@ -39,6 +41,7 @@ export default function MostradorLogica() {
     const [showDialogue3, setShowDialogue3] = useState(false);
     const [timeLeft3, setTimeLeft3] = useState(5);
     const [hasClosedPersiana, setHasClosedPersiana] = useState(false);
+    const [farewellDialogue3, setFarewellDialogue3] = useState(false);
 
 
     const playImgRef = useRef(null);
@@ -46,13 +49,15 @@ export default function MostradorLogica() {
 
     // Configuración del cliente 1
     useEffect(() => {
+        setTimeLeft1(30); // Configura el contador a 30 segundos
+    
         const showImageTimer1 = setTimeout(() => {
             setShowImage1(true);
             setTimeout(() => setSlideIn1(true), 100);
         }, 1000);
-
+    
         const dialogueTimer1 = setTimeout(() => setShowDialogue1(true), 2000);
-
+    
         const countdownInterval1 = setInterval(() => {
             setTimeLeft1(prev => {
                 if (prev > 0) return prev - 1;
@@ -60,7 +65,7 @@ export default function MostradorLogica() {
                 return 0;
             });
         }, 1000);
-
+    
         const hideImageTimer1 = setTimeout(() => {
             if (!hasReceivedFood1) {  
                 setSlideIn1(false);
@@ -69,8 +74,8 @@ export default function MostradorLogica() {
                 const removeImageTimer1 = setTimeout(() => setShowImage1(false), 500);
                 return () => clearTimeout(removeImageTimer1);
             }
-        }, 26000);
-
+        }, 30000);
+    
         return () => {
             clearTimeout(showImageTimer1);
             clearTimeout(hideImageTimer1);
@@ -124,16 +129,22 @@ export default function MostradorLogica() {
     }, [hasReceivedFood2]);
     
     
-    // Configuración del cliente 3
-    useEffect(() => {
-        const showImageTimer3 = setTimeout(() => {
-            setShowImage3(true);
-            setTimeout(() => setSlideIn3(true), 100);
-        }, 61000); // Aparece después de los dos primeros
+  //Configuracion Cliente 3
+  useEffect(() => {
+    const showImageTimer3 = setTimeout(() => {
+        setShowImage3(true);
+        setTimeout(() => setSlideIn3(true), 100);
+
+        // Inicializa el tiempo restante al aparecer el cliente
+        setTimeLeft3(5);
+    }, 61000);
+
+    const dialogueTimer3 = setTimeout(() => setShowDialogue3(true), 5000);
+
+
+
     
-        const dialogueTimer3 = setTimeout(() => setShowDialogue3(true), 62000);
-    
-        // Temporizador para el cliente 3
+        // Temporizador del policía
         const countdownInterval3 = setInterval(() => {
             setTimeLeft3(prev => {
                 if (prev > 0) return prev - 1;
@@ -142,34 +153,35 @@ export default function MostradorLogica() {
             });
         }, 1000);
     
-        // Ocultar cliente 3 después de 5 segundos si la persiana está cerrada
+        // Configuración para ocultar al policía
         const hideImageTimer3 = setTimeout(() => {
-            setSlideIn3(false);
-            setSlideOut3(true);
-            setShowDialogue3(false);
-            setShowImage3(false);
-        }, 66000); // Se oculta después de 5 segundos de estar visible
-    
-        const removeImageTimer3 = setTimeout(() => {
-            setShowImage3(false);
-        }, 5000); // Elimina la imagen después de 5 segundos
+            if (!persianaAbierta) {
+                setSlideIn3(false);
+                setSlideOut3(true);
+                setShowDialogue3(false); // Oculta el diálogo cuando el policía se va
+                setTimeout(() => setShowImage3(false), 500); // Esconde la imagen después de la animación
+            }
+        }, 66000);
     
         return () => {
             clearTimeout(showImageTimer3);
-            clearTimeout(dialogueTimer3);
             clearInterval(countdownInterval3);
             clearTimeout(hideImageTimer3);
-            clearTimeout(removeImageTimer3);
         };
-    }, [hasClosedPersiana]); // Asegúrate de que esto esté en el arreglo de dependencias
-
-    // Modifica togglePersiana para registrar si se cerró cuando aparece el cliente 3
+    }, [persianaAbierta]); // El efecto se vuelve a ejecutar cuando cambia el estado de la persiana
+    
+    
+    // Modificación en togglePersiana para cerrar el diálogo al cerrar la cortina
     const togglePersiana = () => {
         setPersianaAbierta(!persianaAbierta);
+        
         if (!persianaAbierta && showImage3) {
-            setHasClosedPersiana(true);
+            setSlideIn3(false);
+            setSlideOut3(true);
+            setShowDialogue3(false); // Oculta el diálogo cuando el policía se va
+            setTimeout(() => setShowImage3(false), 500); // Esconde la imagen después de la animación
         }
-    };
+    };    
     
 
     // Función para entregar el budín al cliente
@@ -183,24 +195,27 @@ export default function MostradorLogica() {
 
     const handleClientClick = (clientNumber) => {
         if (clientNumber === 1 && hasReceivedFood1) {
-            setScore(prevScore => prevScore + 50);
-            setSlideIn1(false);
-            setSlideOut1(true);
+            setFarewellDialogue1(true);
             setTimeout(() => {
-                setShowImage1(false);
-                setShowDialogue1(false); // Oculta el diálogo después de que el cliente se va
-            }, 500);
+                setScore(prevScore => prevScore + 50);
+                setSlideIn1(false);
+                setSlideOut1(true);
+                setShowDialogue1(false);
+                setFarewellDialogue1(false);
+                setTimeout(() => setShowImage1(false), 500);
+            }, 2000); 
         } else if (clientNumber === 2 && hasReceivedFood2) {
-            setScore(prevScore => prevScore + 30);
-            setSlideIn2(false);
-            setSlideOut2(true);
-            setShowDialogue2(false); // Oculta el diálogo al irse el cliente
+            setFarewellDialogue2(true);
             setTimeout(() => {
-                setShowImage2(false);
-                setShowDialogue2(false); // Asegúrate de que el diálogo esté oculto
-            }, 500);
+                setScore(prevScore => prevScore + 30);
+                setSlideIn2(false);
+                setSlideOut2(true);
+                setShowDialogue2(false);
+                setFarewellDialogue2(false);
+                setTimeout(() => setShowImage2(false), 500);
+            }, 2000); 
         }
-    };
+    };    
     
 
     return (
@@ -208,38 +223,38 @@ export default function MostradorLogica() {
             <Score score={score} />
 
             <Cliente
-                src="/clientes/hombreSucio.png"
-                alt="Cliente 1"
-                dialogue="TENGO HAMBREEE, DAME UN BUDÍN DE CHOCOLATE"
-                showImage={showImage1}
-                slideIn={slideIn1}
-                slideOut={slideOut1}
-                showDialogue={showDialogue1}
-                timeLeft={timeLeft1}
-                onClientClick={() => handleClientClick(1)}
+            src="/clientes/hombreSucio.png"
+            alt="Cliente 1"
+            dialogue={farewellDialogue1 ? "Gracia loco!" : "TENGO HAMBREEE, DAME UN BUDÍN DE CHOCOLATE!"}
+            showImage={showImage1}
+            slideIn={slideIn1}
+            slideOut={slideOut1}
+            showDialogue={showDialogue1 || farewellDialogue1}
+            timeLeft={timeLeft1}
+            onClientClick={() => handleClientClick(1)}
             />
 
             <Cliente
-                src="/clientes/hombreChorro.png"
-                alt="Cliente 2"
-                dialogue="¡Dame un budín de limón, rápido!"
-                showImage={showImage2}
-                slideIn={slideIn2}
-                slideOut={slideOut2}
-                showDialogue={showDialogue2}
-                timeLeft={timeLeft2}
-                onClientClick={() => handleClientClick(2)}
+            src="/clientes/hombreChorro.png"
+            alt="Cliente 2"
+            dialogue={farewellDialogue2 ? "Tardaste una banda amigo, vuelvo a la noche" : "¡Dame un budín de limón, rápido!"}
+            showImage={showImage2}
+            slideIn={slideIn2}
+            slideOut={slideOut2}
+            showDialogue={showDialogue2 || farewellDialogue2}
+            timeLeft={timeLeft2}
+            onClientClick={() => handleClientClick(2)}
             />
 
             <Cliente
-                src="/clientes/Policia.png"
-                alt="Cliente 3"
-                dialogue="¡Necesito ver los papeles del negocio!"
-                showImage={showImage3}
-                slideIn={slideIn3}
-                slideOut={slideOut3}
-                showDialogue={showDialogue3}
-                timeLeft={timeLeft3}
+            src="/clientes/Policia.png"
+            alt="Cliente 3"
+            dialogue={farewellDialogue3 ? "Ya te voy a agarrar!" : "¡Necesito ver los papeles del negocio!"}
+            showImage={showImage3}
+            slideIn={slideIn3}
+            slideOut={slideOut3}
+            showDialogue={showDialogue3 || farewellDialogue3}
+            timeLeft={timeLeft3}
             />
 
 

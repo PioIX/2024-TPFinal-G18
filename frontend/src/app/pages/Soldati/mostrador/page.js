@@ -86,16 +86,17 @@ export default function MostradorLogica() {
 
     //Configuracion Cliente 2
     useEffect(() => {
+        if (!hasReceivedFood2) {
         const showImageTimer2 = setTimeout(() => {
             setShowImage2(true);
             setTimeout(() => setSlideIn2(true), 100);
     
             // Inicializa el tiempo restante al aparecer el cliente
             setTimeLeft2(30);
-        }, 30000);
+        }, 15000);
     
         // Mostrar diálogo después de que el cliente aparece
-        const dialogueTimer2 = setTimeout(() => setShowDialogue2(true), 31000);
+        const dialogueTimer2 = setTimeout(() => setShowDialogue2(true), 16000);
     
         // Iniciar el contador solo cuando el cliente está visible y con tiempo inicializado
         const countdownInterval2 = setInterval(() => {
@@ -126,6 +127,7 @@ export default function MostradorLogica() {
             clearTimeout(dialogueTimer2);
             clearInterval(countdownInterval2);
         };
+    }
     }, [hasReceivedFood2]);
     
     
@@ -137,11 +139,9 @@ export default function MostradorLogica() {
 
         // Inicializa el tiempo restante al aparecer el cliente
         setTimeLeft3(5);
-    }, 61000);
+    }, 30000);
 
-    const dialogueTimer3 = setTimeout(() => setShowDialogue3(true), 5000);
-
-
+    const dialogueTimer3 = setTimeout(() => setShowDialogue3(true), 31000);
 
     
         // Temporizador del policía
@@ -155,18 +155,19 @@ export default function MostradorLogica() {
     
         // Configuración para ocultar al policía
         const hideImageTimer3 = setTimeout(() => {
-            if (!persianaAbierta) {
+            if (showImage3 && !persianaAbierta) {
                 setSlideIn3(false);
                 setSlideOut3(true);
                 setShowDialogue3(false); // Oculta el diálogo cuando el policía se va
                 setTimeout(() => setShowImage3(false), 500); // Esconde la imagen después de la animación
             }
-        }, 66000);
+        }, 5000);
     
         return () => {
             clearTimeout(showImageTimer3);
             clearInterval(countdownInterval3);
             clearTimeout(hideImageTimer3);
+            clearInterval(countdownInterval3);
         };
     }, [persianaAbierta]); // El efecto se vuelve a ejecutar cuando cambia el estado de la persiana
     
@@ -182,6 +183,7 @@ export default function MostradorLogica() {
             setTimeout(() => setShowImage3(false), 500); // Esconde la imagen después de la animación
         }
     };    
+
     
 
     // Función para entregar el budín al cliente
@@ -195,6 +197,7 @@ export default function MostradorLogica() {
 
     const handleClientClick = (clientNumber) => {
         if (clientNumber === 1 && hasReceivedFood1) {
+            setTimeLeft1(0);
             setFarewellDialogue1(true);
             setTimeout(() => {
                 setScore(prevScore => prevScore + 50);
@@ -205,6 +208,7 @@ export default function MostradorLogica() {
                 setTimeout(() => setShowImage1(false), 500);
             }, 2000); 
         } else if (clientNumber === 2 && hasReceivedFood2) {
+            setTimeLeft2(0);
             setFarewellDialogue2(true);
             setTimeout(() => {
                 setScore(prevScore => prevScore + 30);
@@ -274,6 +278,11 @@ export default function MostradorLogica() {
                         <ul>
                             <li>Budín de Chocolate: Masa + chocolate + chips (horno)</li>
                             <li>Budín de Limón: Masa + vainilla + limon (horno)</li>
+                        </ul>
+                        <h3>ALERTA!</h3>
+                        <ul>
+                            <li>Cuando cae la gorra cerrá todo</li>
+                            <li>Cuando cae la noche, cuidado con jonatan</li>
                         </ul>
                     </div>
                 </div>

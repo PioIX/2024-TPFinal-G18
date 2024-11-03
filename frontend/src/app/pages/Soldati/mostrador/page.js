@@ -42,7 +42,7 @@ export default function MostradorLogica() {
     const [timeLeft3, setTimeLeft3] = useState(5);
     const [hasClosedPersiana, setHasClosedPersiana] = useState(false);
     const [farewellDialogue3, setFarewellDialogue3] = useState(false);
-
+    
 
     const playImgRef = useRef(null);
     const soundRef = useRef(null);
@@ -131,53 +131,47 @@ export default function MostradorLogica() {
     }, [hasReceivedFood2]);
     
     
-    //Configuracion Cliente 3
-    useEffect(() => {
-        const showImageTimer3 = setTimeout(() => {
-            setShowImage3(true);
-            setTimeout(() => setSlideIn3(true), 100);
+  //Configuracion Cliente 3
+  useEffect(() => {
+    const showImageTimer3 = setTimeout(() => {
+        setShowImage3(true);
+        setTimeout(() => setSlideIn3(true), 100);
 
-            // Inicializa el tiempo restante al aparecer el cliente
-            setTimeLeft3(5);
-        }, 30000);
+        // Inicializa el tiempo restante al aparecer el cliente
+        setTimeLeft3(5);
+    }, 20000);
 
-        const dialogueTimer3 = setTimeout(() => setShowDialogue3(true), 31000);
+    const dialogueTimer3 = setTimeout(() => setShowDialogue3(true), 31000);
 
+    
         // Temporizador del policía
         const countdownInterval3 = setInterval(() => {
             setTimeLeft3(prev => {
-                if (prev > 0) {
-                    return prev - 1;
-                } else {
-                    clearInterval(countdownInterval3); // Detener el intervalo al llegar a 0
-                    
-                    // Cliente se va independientemente de la persiana
-                    setSlideIn3(false);
-                    setSlideOut3(true);
-                    setShowDialogue3(false);
-
-                    // Penalización si la persiana está abierta
-                    if (!persianaAbierta) {
-                        setScore(prevScore => prevScore - 75);
-                    }
-
-                    // Ocultar imagen después de la animación de salida
-                    setTimeout(() => setShowImage3(false), 500);
-                    
-                    return 0;
-                }
+                if (prev > 0) return prev - 1;
+                clearInterval(countdownInterval3);
+                return 0;
             });
         }, 1000);
-
-        // Limpieza de temporizadores e intervalos
+    
+        // Configuración para ocultar al policía
+        const hideImageTimer3 = setTimeout(() => {
+            if (showImage3 && setTimeLeft3 === 0) {
+                setSlideIn3(false);
+                setSlideOut3(true);
+                setShowDialogue3(false); // Oculta el diálogo cuando el policía se va
+                setTimeout(() => setShowImage3(false), 500); // Esconde la imagen después de la animación
+            }
+        }, 5000);
+    
         return () => {
             clearTimeout(showImageTimer3);
-            clearTimeout(dialogueTimer3);
+            clearInterval(countdownInterval3);
+            clearTimeout(hideImageTimer3);
             clearInterval(countdownInterval3);
         };
-    }, [persianaAbierta]);
-
-       
+    }, [persianaAbierta]); // El efecto se vuelve a ejecutar cuando cambia el estado de la persiana
+    
+    
     // Modificación en togglePersiana para cerrar el diálogo al cerrar la cortina
     const togglePersiana = () => {
         setPersianaAbierta(!persianaAbierta);
@@ -189,6 +183,7 @@ export default function MostradorLogica() {
             setTimeout(() => setShowImage3(false), 500); // Esconde la imagen después de la animación
         }
     };    
+
     
 
     // Función para entregar el budín al cliente
@@ -246,7 +241,7 @@ export default function MostradorLogica() {
             <Cliente
             src="/clientes/hombreChorro.png"
             alt="Cliente 2"
-            dialogue={farewellDialogue2 ? "Tardaste una banda amigo, vuelvo a la noche" : "¡Dame un budín de limón, rápido!"}
+            dialogue={farewellDialogue2 ? "Tardaste una banda amigo, vuelvo a la noche" : "¡Dame un budín de vainilla, rápido!"}
             showImage={showImage2}
             slideIn={slideIn2}
             slideOut={slideOut2}
@@ -281,8 +276,8 @@ export default function MostradorLogica() {
                         </button>
                         <h3>Recetas</h3>
                         <ul>
-                            <li>Budín de Chocolate: Masa + chocolate + chips (horno)</li>
-                            <li>Budín de Limón: Masa + vainilla + limon (horno)</li>
+                            <li>Budín de Chocolate: Budín + horno + chocolate</li>
+                            <li>Budín de Vainilla: Budín + horno + vainilla</li>
                         </ul>
                         <h3>ALERTA!</h3>
                         <ul>

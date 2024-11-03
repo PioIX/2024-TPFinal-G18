@@ -131,47 +131,53 @@ export default function MostradorLogica() {
     }, [hasReceivedFood2]);
     
     
-  //Configuracion Cliente 3
-  useEffect(() => {
-    const showImageTimer3 = setTimeout(() => {
-        setShowImage3(true);
-        setTimeout(() => setSlideIn3(true), 100);
+    //Configuracion Cliente 3
+    useEffect(() => {
+        const showImageTimer3 = setTimeout(() => {
+            setShowImage3(true);
+            setTimeout(() => setSlideIn3(true), 100);
 
-        // Inicializa el tiempo restante al aparecer el cliente
-        setTimeLeft3(5);
-    }, 30000);
+            // Inicializa el tiempo restante al aparecer el cliente
+            setTimeLeft3(5);
+        }, 30000);
 
-    const dialogueTimer3 = setTimeout(() => setShowDialogue3(true), 31000);
+        const dialogueTimer3 = setTimeout(() => setShowDialogue3(true), 31000);
 
-    
         // Temporizador del policía
         const countdownInterval3 = setInterval(() => {
             setTimeLeft3(prev => {
-                if (prev > 0) return prev - 1;
-                clearInterval(countdownInterval3);
-                return 0;
+                if (prev > 0) {
+                    return prev - 1;
+                } else {
+                    clearInterval(countdownInterval3); // Detener el intervalo al llegar a 0
+                    
+                    // Cliente se va independientemente de la persiana
+                    setSlideIn3(false);
+                    setSlideOut3(true);
+                    setShowDialogue3(false);
+
+                    // Penalización si la persiana está abierta
+                    if (!persianaAbierta) {
+                        setScore(prevScore => prevScore - 75);
+                    }
+
+                    // Ocultar imagen después de la animación de salida
+                    setTimeout(() => setShowImage3(false), 500);
+                    
+                    return 0;
+                }
             });
         }, 1000);
-    
-        // Configuración para ocultar al policía
-        const hideImageTimer3 = setTimeout(() => {
-            if (showImage3 && !persianaAbierta) {
-                setSlideIn3(false);
-                setSlideOut3(true);
-                setShowDialogue3(false); // Oculta el diálogo cuando el policía se va
-                setTimeout(() => setShowImage3(false), 500); // Esconde la imagen después de la animación
-            }
-        }, 5000);
-    
+
+        // Limpieza de temporizadores e intervalos
         return () => {
             clearTimeout(showImageTimer3);
-            clearInterval(countdownInterval3);
-            clearTimeout(hideImageTimer3);
+            clearTimeout(dialogueTimer3);
             clearInterval(countdownInterval3);
         };
-    }, [persianaAbierta]); // El efecto se vuelve a ejecutar cuando cambia el estado de la persiana
-    
-    
+    }, [persianaAbierta]);
+
+       
     // Modificación en togglePersiana para cerrar el diálogo al cerrar la cortina
     const togglePersiana = () => {
         setPersianaAbierta(!persianaAbierta);
@@ -183,7 +189,6 @@ export default function MostradorLogica() {
             setTimeout(() => setShowImage3(false), 500); // Esconde la imagen después de la animación
         }
     };    
-
     
 
     // Función para entregar el budín al cliente

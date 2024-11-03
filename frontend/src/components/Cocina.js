@@ -1,5 +1,6 @@
 "use client"
 
+
 export default function Cocina (props){
     const foto= "/images/" + props.img;
 

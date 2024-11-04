@@ -10,12 +10,13 @@
 
 .imgBudinSinCocinar {
     position: absolute;
-    height: 210px;
-    width: 310px;
+    height: 200px;
+    width: 290px;
     top: 380px;
     left: 650px;
-    transform: rotate(17deg);
+    transform: rotate(4deg);
     z-index: 30;
+    cursor: pointer;
 }
 
 .imgBudinCocido {
@@ -25,6 +26,7 @@
     top: 370px; /* Ajusta la posición según tus necesidades */
     left: 160px;
     z-index: 20;
+    cursor: pointer;
 }
 
 .imgVainilla {
@@ -34,6 +36,7 @@
     top: 401px; /* Ajusta la posición según tus necesidades */
     left: 500px;
     z-index: 25;
+    cursor: pointer;
 }
 
 .imgBudinLimon {
@@ -42,6 +45,7 @@
     width: 120px;
     top: 370px;
     left: 1200px;
+    cursor: pointer;
 }
 
 .imgBudinChocolate {
@@ -50,6 +54,7 @@
     width: 120px;
     top: 370px;
     left: 1200px;
+    cursor: pointer;
 }
 
 .imgChocolate {
@@ -58,6 +63,7 @@
     width: 190px;
     top: 390px;
     left: 320px;
+    cursor: pointer;
 }
 
 /*.imgCintaMecanica {

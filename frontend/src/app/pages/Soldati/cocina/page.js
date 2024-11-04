@@ -30,7 +30,7 @@ export default function cocinaLogica() {
         if (isCooked || !isPlaced) return;
 
         const rect = e.currentTarget.getBoundingClientRect();
-        const newTop = rect.bottom - 322;
+        const newTop = rect.bottom - 332;
         const newLeft = rect.right - 410;
 
         setBudinPosition({ top: newTop, left: newLeft });

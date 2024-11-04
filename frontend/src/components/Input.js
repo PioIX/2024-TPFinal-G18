@@ -6,8 +6,8 @@ export default function Input(props) {
     return (
         <input
             type="text"
-            id="inputField"
-            placeholder="Ingrese el codigo de la sala..."
+            id={props.id}
+            placeholder={props.placeholder}
             value={props.value}
             onChange={props.handleChange}
             className={clsx(

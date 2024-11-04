@@ -5,7 +5,7 @@ import clsx from "clsx";
 export default function Button(props) {
 
     return (
-      <button type="button" className={
+      <button id={props.id} type="button" className={
         clsx(
           {
             [styles.button]: true,

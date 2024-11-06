@@ -69,9 +69,20 @@ export default function Menu() {
         setCodigoMenu("");
     }
 
-    function unirsePartida(event) {
+    function obtenerBarrio() {
+        return "Soldati";
+    }
+
+    async function unirseMostrador(event) {
         console.log(event.target.id);
-        
+        let barrio = await obtenerBarrio();
+        router.push(`/pages/${barrio}/mostrador`);
+    }
+
+    async function unirseCocina(event) {
+        console.log(event.target.id);
+        let barrio = await obtenerBarrio();
+        router.push(`/pages/${barrio}/cocina`);
     }
 
     return (
@@ -83,10 +94,10 @@ export default function Menu() {
                 {codigoSalaValido && (
                     <div className={styles['button-container']}>
                         <div className={styles.link}>
-                            <Button id="mostrador" text="Unirme al mostrador" variant="jugar" onClick={unirsePartida} />
+                            <Button id="mostrador" text="Unirme al mostrador" variant="jugar" onClick={unirseMostrador} />
                         </div>
                         <div className={styles.link}>
-                            <Button id="cocina" text="Unirme a la cocina" variant="jugar" onClick={unirsePartida} />
+                            <Button id="cocina" text="Unirme a la cocina" variant="jugar" onClick={unirseCocina} />
                         </div>
                         <Button
                             text="Volver"

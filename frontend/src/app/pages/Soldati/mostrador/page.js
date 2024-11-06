@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import styles from "./mostradorsoldati.module.css";
-import Mostrador from "@/components/Mostrador";
+//import Mostrador from "@/components/Mostrador";
 import Score from '@/components/Score';
 import Cliente from "@/components/Clientes";
 

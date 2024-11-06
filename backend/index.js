@@ -63,8 +63,30 @@ app.get('/', (req, res) => {
 	console.log(`[REQUEST - ${req.method}] ${req.url}`);
 });
 
-app.post('/login', (req, res) => {
-	console.log(`[REQUEST - ${req.method}] ${req.url}`);
+app.post('/login', async (req, res) => {
+	let usuario;
+	console.log("Recibi: ", req.body);
+
+	usuario = await MySQL.realizarQuery(`SELECT idUsuarios FROM Usuarios WHERE username='${req.body.username}' AND password='${req.body.password}';`);
+	if (usuario.length != 0) {
+		console.log(usuario);
+		res.send(usuario)
+	} else {
+		res.send([]);
+	}
+});
+
+app.post('/register', async (req, res) => {
+	let usuario;
+	console.log("Recibi: ", req.body);
+
+	usuario = await MySQL.realizarQuery(`INSERT INTO Usuarios (username, password) VALUES ('${req.body.username}', '${req.body.password}');`);
+	if (usuario.length != 0) {
+		console.log(usuario);
+		res.send(usuario)
+	} else {
+		res.send([]);
+	}
 });
 
 app.delete('/login', (req, res) => {

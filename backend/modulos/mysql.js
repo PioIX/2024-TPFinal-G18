@@ -10,7 +10,7 @@ const SQL_CONFIGURATION_DATA =
 	//host: "186.18.137.196", //IP pública del servidor del colegio
 	user: "2024-5BINF-G09",
 	password: "y0g44l4m4n3c3r911",
-	database: "2024-5BINF-G18",
+	database: "2024-5BINF-G09",
 	port: 3306,
 	charset: 'UTF8_GENERAL_CI'
 }

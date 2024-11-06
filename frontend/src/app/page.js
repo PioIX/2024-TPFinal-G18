@@ -1,126 +1,89 @@
-"use client"; // Asegúrate de que esto esté al inicio del archivo
+"use client"
 
+import Login from "@/components/Login";
+import Register from "@/components/Register";
 import { useRouter } from "next/navigation";
-import Button from "@/components/Button";
-import Form from "@/components/Form";
-import styles from "./page.module.css";
-import { useEffect, useState } from "react";
-import Link from "next/link";
-import { Bowlby_One_SC } from "next/font/google";
-import { useSocket } from "@/hooks/socket";
+import { useState } from "react";
 
-// Importa la fuente de Google correctamente con el peso especificado
-const bowlbyOneSC = Bowlby_One_SC({
-    subsets: ['latin'],
-    display: 'swap',
-    weight: '400',  // Especifica el peso de la fuente
-    variable: '--font-bowlbyonesc'
-});
 
-export default function Menu() {
+export default function loginPage() {
     const router = useRouter();
-    const generados = new Set();
-    const [codigoSala, setCodigoMenu] = useState("");
-    const [codigoSalaValido, setCodigoSalaValido] = useState(false);
-    const { socket, isConnected } = useSocket();
+    const [username, setUsername] = useState("");
+    const [password, setPassword] = useState("");
+    const [loginMode, setLoginMode] = useState(true);
 
-    useEffect(() => {
-        if (!socket)
-            return;
+    async function handleLogin() {
+        console.log(username, password);
 
-    }, [socket, isConnected])
-
-    function crearMenu() {
-        const caracteres = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-        let codigo;
-
-        do {
-            codigo = '';
-            for (let i = 0; i < 5; i++) {
-                codigo += caracteres.charAt(Math.floor(Math.random() * caracteres.length));
-            }
-        } while (generados.has(codigo));
-
-        generados.add(codigo);
-        console.log(codigo);
-        const params = new URLSearchParams(window.location.search);
-        const UsuarioId = params.get("idUsuario");
-        router.push(`/juego?codigo=${codigo}&idUsuario=${UsuarioId}`);
-    }
-
-    function unirMenu() {
-        if (codigoSala.trim() === "") {
-            alert("Por favor, ingresa un código de sala válido.");
-            return;
+        let datos = {
+            username: username,
+            password: password
         }
 
-        if (codigoSala.trim().length != 4) {
-            alert("Por favor, ingrese un código de 4 dígitos");
-            return;
-        } else {
-            setCodigoSalaValido(true);
-            console.log("Unirse a la sala:", codigoSala);
-            socket.emit("joinRoom", { room: codigoSala });
+        const response = await fetch("http://localhost:4000/login", {
+            method: "POST",
+            body: JSON.stringify(datos),
+            headers: {
+                "Content-Type": "application/json",
+            },
+        })
+
+        const respuesta = await response.json();
+        if (respuesta.length != 0) {
+            router.push("/sala");
+        } else
+            alert("Datos incorrectos");
+    }
+
+    async function handleRegister() {
+        let datos = {
+            username: username,
+            password: password
+        }
+        console.log(datos);
+        const response = await fetch("http://localhost:4000/register", {
+            method: "POST",
+            body: JSON.stringify(datos),
+            headers: {
+                "Content-Type": "application/json",
+            },
+        })
+
+        const respuesta = await response.json();
+        if (respuesta.length != 0) {
+            router.push("/sala");
+        } else
+            alert("Datos incorrectos");
+
+    }
+
+    function handleInputs(event) {
+        if(event.target.id == "username") {
+            setUsername(event.target.value)
+        } else if (event.target.id == "password") {
+            setPassword(event.target.value)
         }
     }
 
-    function volverMenu() {
-        setCodigoSalaValido(false);
-        setCodigoMenu("");
-    }
-
-    function obtenerBarrio() {
-        return "Soldati";
-    }
-
-    async function unirseMostrador(event) {
-        console.log(event.target.id);
-        let barrio = await obtenerBarrio();
-        router.push(`/pages/${barrio}/mostrador`);
-    }
-
-    async function unirseCocina(event) {
-        console.log(event.target.id);
-        let barrio = await obtenerBarrio();
-        router.push(`/pages/${barrio}/cocina`);
-    }
-
-    return (
-        <>
-            <div className={`${styles.completo} ${bowlbyOneSC.variable}`}>
-                <h1 className={`${styles.h1} ${bowlbyOneSC.className}`}>
-                    Messina's Pastry Parade
-                </h1>
-                {codigoSalaValido && (
-                    <div className={styles['button-container']}>
-                        <div className={styles.link}>
-                            <Button id="mostrador" text="Unirme al mostrador" variant="jugar" onClick={unirseMostrador} />
-                        </div>
-                        <div className={styles.link}>
-                            <Button id="cocina" text="Unirme a la cocina" variant="jugar" onClick={unirseCocina} />
-                        </div>
-                        <Button
-                            text="Volver"
-                            variant="volver"
-                            onClick={volverMenu}
-                        />
-                    </div>
-                )}
-
-                {!codigoSalaValido && (
-                    <div className={styles['button-container']}>
-                        <p className={styles.texto}>Unite a una sala multijugador:</p>
-                        <Form placeholder="Ingrese código de sala" handleChange={(e) => setCodigoMenu(e.target.value)} />
-                        <br />
-                        <Button
-                            text="Unirme"
-                            variant="jugar"
-                            onClick={unirMenu}
-                            disabled={codigoSala.trim() === ""}
-                        />
-                    </div>
-                )}
-            </div>
-        </>
-    );
+    return(
+    <div>
+        {
+            loginMode == true && 
+            <>
+                <h3>Inicie Sesión</h3>
+                <Login onClick={handleLogin} onChange={handleInputs}></Login>
+                <a onClick={() => setLoginMode(false)}>¿Todavía no te registraste?</a>
+            </>
+        }
+        {
+            loginMode == false && 
+            <>
+                <h3>Regístrese</h3>
+                <Register onClick={handleRegister} onChange={handleInputs}></Register>
+                <a onClick={() => setLoginMode(true)}>¿Ya estás registrado? Incia sesión</a>
+            </>
+        }
+        
+    </div>
+    )
 }

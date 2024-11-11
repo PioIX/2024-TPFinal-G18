@@ -1,0 +1,9 @@
+.imgLiniers {
+    position: relative;
+    height: 99vh; /* Asegura que ocupe toda la pantalla */
+    width: 100%;
+    background-image: url('/escenarios/mostradores/LINIERS.png'); /* Ruta de la imagen en tu carpeta */
+    background-size: cover;
+    background-position: center;
+    overflow: hidden; /* Evita que cualquier contenido sobresalga */
+}

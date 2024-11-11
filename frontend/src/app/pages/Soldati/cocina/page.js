@@ -1,7 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styles from "./cocinasoldati.module.css";
+import { useSocket } from "@/hooks/socket";
+
 
 export default function cocinaLogica() {
     const [budinPosition, setBudinPosition] = useState({ top: 372, left: 650 });
@@ -11,6 +13,14 @@ export default function cocinaLogica() {
     const [isChocolateSelected, setIsChocolateSelected] = useState(false);
     const [budinType, setBudinType] = useState(null); // "vainilla" o "chocolate"
     const [isBudinFinalSelected, setIsBudinFinalSelected] = useState(false); // Estado para mostrar la flecha
+    const {socket, isConnected} = useSocket();
+
+    useEffect(() => {
+        if (!socket) 
+            return;
+
+        //Todo lo que reciba el socket se hace acá
+    }, [socket,isConnected]);
 
     const handleBudinClick = () => {
         if (!isPlaced) {
@@ -59,6 +69,7 @@ export default function cocinaLogica() {
     const handleArrowClick = () => {
         setIsBudinFinalSelected(false); // Oculta el budín cuando se hace clic en la flecha
         setIsCooked(false);
+        socket.emit("budinCocina", {budin: budinType});
         setBudinType(null);
     };
 

@@ -104,6 +104,7 @@ io.on("connection", (socket) => {
 		if (req.session.room != undefined && req.session.room.length > 0)
 			socket.leave(req.session.room);
 		req.session.room = data.room;
+		//Aca agregar validación por si son mas de 2 users
 		socket.join(req.session.room);
 
 		io.to(req.session.room).emit('chat-messages', { user: req.session.user, room: req.session.room });
@@ -116,6 +117,12 @@ io.on("connection", (socket) => {
 
 	socket.on('sendMessage', data => {
 		io.to(req.session.room).emit('newMessage', { room: req.session.room, message: data });
+	});
+
+	socket.on('budinCocina', data => {
+		console.log(data);
+		//Hay que hacer que solo se lo mande al de la sala
+		io.emit('budinMostrador', {budin: data.budin});
 	});
 
 	socket.on('disconnect', () => {

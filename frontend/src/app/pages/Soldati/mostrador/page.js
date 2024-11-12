@@ -11,6 +11,7 @@ export default function MostradorLogica() {
     const [score, setScore] = useState(0); // Definimos el estado para el puntaje
     const [showRecipeModal, setShowRecipeModal] = useState(false); // Estado para el modal de recetas
     const [persianaAbierta, setPersianaAbierta] = useState(false);
+    const [clientes, setClientes] = useState([]);
     const { socket, isConnected } = useSocket();
 
     // Función para abrir/cerrar el modal de recetas
@@ -44,10 +45,58 @@ export default function MostradorLogica() {
     const [timeLeft3, setTimeLeft3] = useState(5);
     const [hasClosedPersiana, setHasClosedPersiana] = useState(false);
     const [farewellDialogue3, setFarewellDialogue3] = useState(false);
+
+    // Estados para budin / entregar budin
     const [budinURL, setbudinURL] = useState("/objetos/png.png");
+    const [budinEvent, setBudinEvent] = useState();
 
     const playImgRef = useRef(null);
     const soundRef = useRef(null);
+
+    function getRandomInt(max) {
+        return Math.floor(Math.random() * max);
+    }
+
+    useEffect(() => {
+        obtenerClientesMezcladosPorNivel();
+
+    }, [])
+
+    async function obtenerClientesMezcladosPorNivel() {
+        const response = await fetch("http://localhost:4000/clientesPorEscenario?idEscenario=1", { //idFijo porque se que es el 1
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+            },
+        })
+        const clientesSinMezclar = await response.json();
+        let clientesMezclados = []
+        /*
+        for (let i=0; i<clientesSinMezclar.length; i++) {
+            let numeroAleatorio = getRandomInt(clientesSinMezclar.length);
+            let clienteRandom = clientesSinMezclar[numeroAleatorio];
+
+            if (clientesMezclados.includes(clienteRandom)) {
+                i--;
+            } else {
+                clientesMezclados.push(clienteRandom);
+            }
+
+
+        }
+        */
+
+        //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        clientesMezclados = clientesSinMezclar;
+        //Por ahora pongo estos clientes, habría que poner los mezclados
+        setClientes(clientesMezclados); 
+    }
+
 
     useEffect(() => {
         if (!socket)
@@ -205,14 +254,14 @@ export default function MostradorLogica() {
     // Función para entregar el budín al cliente
     const handleGiveFood = (event) => {
         //Con esto desaparece el budin
-        event.target.src = "/objetos/png.png";
 
         // Cambiar la aparicion del budin
 
-        if (event.target.src == "/objetos/png.png") {
+        if (event.target.src != "/objetos/png.png") {
+            
             if (showImage1 && !hasReceivedFood1) {
+                setBudinEvent(event);
                 setHasReceivedFood1(true);
-                event.target.src = ""
             } else if (showImage2 && !hasReceivedFood2) {
                 setHasReceivedFood2(true);
             }
@@ -220,6 +269,7 @@ export default function MostradorLogica() {
     };
 
     const handleClientClick = (clientNumber) => {
+        budinEvent.target.src = "/objetos/png.png";
         if (clientNumber === 1 && hasReceivedFood1) {
             setTimeLeft1(0);
             setFarewellDialogue1(true);
@@ -249,6 +299,15 @@ export default function MostradorLogica() {
     return (
         <div className={styles.imgSoldati}>
             <Score score={score} />
+            
+            {
+                clientes.map(cliente => {
+                    <Cliente src={cliente.skin} 
+                    alt={cliente.nombre}
+                    
+                    ></Cliente>
+                })
+            }
 
             <Cliente
                 src="/clientes/hombreSucio.png"

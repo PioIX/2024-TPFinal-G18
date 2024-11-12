@@ -89,6 +89,18 @@ app.post('/register', async (req, res) => {
 	}
 });
 
+app.get('/clientesPorEscenario', async (req, res) => {
+	let idEscenario = req.query.idEscenario;
+	const idClientes = await MySQL.realizarQuery(`SELECT idCliente FROM ClientesEscenarios WHERE idEscenario=${idEscenario}`);
+	
+	let vectorClientes = [];
+	for (let i=0; i<idClientes.length; i++) {
+		let cliente = await MySQL.realizarQuery(`SELECT * FROM Clientes WHERE idCliente=${idClientes[i].idCliente}`);
+		vectorClientes.push(cliente[0]);
+	}
+	res.send(vectorClientes);
+});
+
 app.get('/randomClient', (req, res) => {
     MySQL.realizarQuery(`SELECT skin FROM Usuarios ORDER BY RAND() LIMIT 1;`)
         .then(randomClient => {

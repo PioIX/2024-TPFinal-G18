@@ -44,7 +44,7 @@ export default function MostradorLogica() {
     const [timeLeft3, setTimeLeft3] = useState(5);
     const [hasClosedPersiana, setHasClosedPersiana] = useState(false);
     const [farewellDialogue3, setFarewellDialogue3] = useState(false);
-    const [budinURL, setbudinURL] = useState("/objetos/budinChocolateSoldati.png");
+    const [budinURL, setbudinURL] = useState("/objetos/png.png");
 
     const playImgRef = useRef(null);
     const soundRef = useRef(null);
@@ -70,9 +70,9 @@ export default function MostradorLogica() {
         const showImageTimer1 = setTimeout(() => {
             setShowImage1(true);
             setTimeout(() => setSlideIn1(true), 100);
-        }, 1000);
+        }, 4000);
 
-        const dialogueTimer1 = setTimeout(() => setShowDialogue1(true), 2000);
+        const dialogueTimer1 = setTimeout(() => setShowDialogue1(true), 5000);
 
         const countdownInterval1 = setInterval(() => {
             setTimeLeft1(prev => {
@@ -90,7 +90,7 @@ export default function MostradorLogica() {
                 const removeImageTimer1 = setTimeout(() => setShowImage1(false), 500);
                 return () => clearTimeout(removeImageTimer1);
             }
-        }, 30000);
+        }, 31000);
 
         return () => {
             clearTimeout(showImageTimer1);
@@ -109,10 +109,10 @@ export default function MostradorLogica() {
 
                 // Inicializa el tiempo restante al aparecer el cliente
                 setTimeLeft2(30);
-            }, 15000);
+            }, 33000);
 
             // Mostrar diálogo después de que el cliente aparece
-            const dialogueTimer2 = setTimeout(() => setShowDialogue2(true), 16000);
+            const dialogueTimer2 = setTimeout(() => setShowDialogue2(true), 34000);
 
             // Iniciar el contador solo cuando el cliente está visible y con tiempo inicializado
             const countdownInterval2 = setInterval(() => {
@@ -155,7 +155,7 @@ export default function MostradorLogica() {
 
             // Inicializa el tiempo restante al aparecer el cliente
             setTimeLeft3(5);
-        }, 20000);
+        }, 50000);
 
         const dialogueTimer3 = setTimeout(() => setShowDialogue3(true), 31000);
 
@@ -205,11 +205,11 @@ export default function MostradorLogica() {
     // Función para entregar el budín al cliente
     const handleGiveFood = (event) => {
         //Con esto desaparece el budin
-        event.target.src = "";
+        event.target.src = "/objetos/png.png";
 
         // Cambiar la aparicion del budin
 
-        if (event.target.src == "") {
+        if (event.target.src == "/objetos/png.png") {
             if (showImage1 && !hasReceivedFood1) {
                 setHasReceivedFood1(true);
                 event.target.src = ""

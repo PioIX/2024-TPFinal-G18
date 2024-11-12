@@ -89,6 +89,23 @@ app.post('/register', async (req, res) => {
 	}
 });
 
+app.get('/randomClient', (req, res) => {
+    MySQL.realizarQuery(`SELECT skin FROM Usuarios ORDER BY RAND() LIMIT 1;`)
+        .then(randomClient => {
+            // Verificar si el campo 'skin' existe en el resultado
+            if (randomClient && randomClient[0] && randomClient[0].skin) {
+                res.json({ skin: randomClient[0].skin });
+            } else {
+                res.status(404).json({ error: 'No skin found' });
+            }
+        })
+        .catch(err => {
+            // Manejar errores
+            console.error('Error fetching random client skin:', err);
+            res.status(500).json({ error: 'Internal server error' });
+        });
+});
+
 app.delete('/login', (req, res) => {
 	console.log(`[REQUEST - ${req.method}] ${req.url}`);
 	res.send(null);

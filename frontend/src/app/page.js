@@ -54,7 +54,6 @@ export default function loginPage() {
             router.push("/sala");
         } else
             alert("Datos incorrectos");
-
     }
 
     function handleInputs(event) {

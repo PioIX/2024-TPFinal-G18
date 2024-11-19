@@ -13,7 +13,8 @@ export default function Cliente({
     slideOut,
     showDialogue,
     timeLeft,
-    onClientClick
+    onClientClick,
+    esPolicia
 }) {
     if (!showImage) return null;
 

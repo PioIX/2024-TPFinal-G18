@@ -11,7 +11,7 @@ export default function MostradorLogica() {
     const [score, setScore] = useState(0); // Definimos el estado para el puntaje
     const [showRecipeModal, setShowRecipeModal] = useState(false); // Estado para el modal de recetas
     const [persianaAbierta, setPersianaAbierta] = useState(false);
-    const [clientes, setClientes] = useState([]);
+    const [clientes, setClientes] = useState([]); //ya mezclados
     const { socket, isConnected } = useSocket();
 
     // Función para abrir/cerrar el modal de recetas
@@ -71,7 +71,7 @@ export default function MostradorLogica() {
         })
         const clientesSinMezclar = await response.json();
         let clientesMezclados = []
-        /*
+        
         for (let i=0; i<clientesSinMezclar.length; i++) {
             let numeroAleatorio = getRandomInt(clientesSinMezclar.length);
             let clienteRandom = clientesSinMezclar[numeroAleatorio];
@@ -84,16 +84,7 @@ export default function MostradorLogica() {
 
 
         }
-        */
-
-        //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         clientesMezclados = clientesSinMezclar;
-        //Por ahora pongo estos clientes, habría que poner los mezclados
         setClientes(clientesMezclados); 
     }
 
@@ -306,6 +297,7 @@ export default function MostradorLogica() {
                     alt={cliente.nombre}
                     
                     ></Cliente>
+                    
                 })
             }
 

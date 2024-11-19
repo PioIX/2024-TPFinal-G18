@@ -4,6 +4,7 @@ import Login from "@/components/Login";
 import Register from "@/components/Register";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import styles from "@/app/page.module.css";
 
 
 export default function loginPage() {
@@ -64,25 +65,21 @@ export default function loginPage() {
         }
     }
 
-    return(
-    <div>
-        {
-            loginMode == true && 
-            <>
-                <h3>Inicie Sesión</h3>
-                <Login onClick={handleLogin} onChange={handleInputs}></Login>
-                <a onClick={() => setLoginMode(false)}>¿Todavía no te registraste?</a>
-            </>
-        }
-        {
-            loginMode == false && 
-            <>
-                <h3>Regístrese</h3>
-                <Register onClick={handleRegister} onChange={handleInputs}></Register>
-                <a onClick={() => setLoginMode(true)}>¿Ya estás registrado? Incia sesión</a>
-            </>
-        }
-        
-    </div>
-    )
-}
+    return (
+        <div className={styles.container}>
+          {loginMode ? (
+            <div className={styles.loginContainer}>
+              <h3 className={styles.heading}>Inicie Sesión</h3>
+              <Login onClick={handleLogin} onChange={handleInputs} />
+              <a className={styles.link} onClick={() => setLoginMode(false)}>¿Todavía no te registraste?</a>
+            </div>
+          ) : (
+            <div className={styles.registerContainer}>
+              <h3 className={styles.heading}>Regístrese</h3>
+              <Register onClick={handleRegister} onChange={handleInputs} />
+              <a className={styles.link} onClick={() => setLoginMode(true)}>¿Ya estás registrado? Inicia sesión</a>
+            </div>
+          )}
+        </div>
+      );
+    }

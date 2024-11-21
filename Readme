@@ -1,0 +1,13 @@
+EXPO PIO - GRUPO Nro 18 - Martínez, Messina, Mollo y Suárez Silva. 
+“Messina 's Pastry Parade” es un juego basado en una panadería al estilo FoodTruck que está dividida entre mostrador y cocina. Se requieren 2 jugadores, uno para cada sala, y se necesita de la cooperación de ambos al mismo tiempo para poder cocinar y vender budines de diferentes sabores a diferentes clientes, que irán variando según el escenario.
+El juego tiene diferentes escenarios, y vas avanzando entre ellos cuando vas progresando en el juego y vas aumentando tu puntaje/plata. La idea es vender la mayor cantidad de budines y recolectar la mayor cantidad de plata mientras disfrutas de una experiencia por toda la Ciudad Autónoma de Buenos Aires. 
+Es un juego único en la Argentina, desarrollado por el Monobloque Game Studios y potencial candidato al premio Game of the Year 2025. Se estima su lanzamiento oficial para febrero de 2025. Las grandes mentes maestras detrás de MGS son Lorenzo Martinez, Franco Messina, Fabrizio Mollo y Lautaro Suárez. 
+El nombre de este juego se debe al pasado de uno de los desarrolladores, que desde los 12 años luchó en la calle, vendiendo budines por toda la ciudad, para sobrevivir a la crisis del 2001 y poder proveer alimentos para él y su hermano pequeño, Jhon.
+
+Para este trabajo utilizamos JavaScript, Next.js, MySQL, imaginación y creatividad.
+
+Primero y principal, la idea del juego surge a partir de una historia real, por lo cual no tuvimos dificultades en cuanto a eso. En cuanto al diseño, decidimos elegir: para los escenarios, distintas ubicaciones de CABA, y utilizarlas como fondo tanto para el mostrador como para la ventana de la cocina. Para los clientes, buscamos promover la diversidad cultural con la inclusión de personas de distintas clases sociales y económicas, distintas culturas y religiones, a estos les aplicamos filtros de Playstation 2 para darle un tono más retro y atractivo. 
+Durante la fase del desarrollo nos encontramos con distintas dificultades que nos han llevado a este punto en el cual estamos naufragando por el océano pacifico. 
+Para testear el funcionamiento del juego realizamos distintas pruebas y convocamos a distintos grupos de personas, solicitando una opinión honesta y completa, incluso siendo remunerados por su devolución. Algunos de los participantes anticiparon: “Es el juego del año”, “Prometedor”, “Original, muy creativo”, “Best game i’ve ever played”. 
+
+El juego está destinado a todo el que quiera pasar un buen rato y divertirse, además de poder explorar distintos aspectos de la cultura argentina, ya que además de las ubicaciones, los escenarios contienen varios Easter Eggs propios de nuestro país (objetos y clientes).

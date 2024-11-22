@@ -1,3 +1,4 @@
+/* Estilo para el contenedor principal con la imagen de fondo */
 .imgLiniers {
     position: relative;
     height: 99vh; /* Asegura que ocupe toda la pantalla */
@@ -7,7 +8,6 @@
     background-position: center;
     overflow: hidden; /* Evita que cualquier contenido sobresalga */
 }
-
 
 /* Estilo para la radio (imagen interactiva) */
 #playImg {
@@ -148,12 +148,12 @@
     color: red; /* Cambia el color según tu preferencia */
 }
 
-.imgRadio {
+.imgCajaRegistradoraLiniers {
     position: absolute;
-    top: 480px;
-    left: 1190px;
-    width: 450px;
-    height: 280px;
+    top: 520px;
+    width: 480px;
+    height: 305px;
+    left: 1110px;
     z-index: 30;
 }
 
@@ -180,13 +180,13 @@
     z-index: 30;
 }
 
-.imgCajaRegistradora {
+.imgRadio {
     position: absolute;
-    top: 470px;
-    width: 580px;
-    height: 325px;
-    left: 840px;
-    z-index: 30;
+    top: 430px;
+    left: 1420px;
+    width: 680px;
+    height: 380px;
+    z-index: 50;
 }
 
 .persiana {
@@ -223,3 +223,29 @@
     cursor: pointer;
     z-index: 9999; /* Asegura que esté sobre la persiana */
 }
+
+.policeAlert {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background-color: red;
+  color: white;
+  padding: 10px;
+  border-radius: 5px;
+  transition: all 1s ease-out; /* Transición suave */
+}
+
+.diaTerminado {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 20px;
+    border-radius: 10px;
+    font-size: 2rem;
+    text-align: center;
+    z-index: 1000; /* Asegúrate de que esté por encima de otros elementos */
+}
+

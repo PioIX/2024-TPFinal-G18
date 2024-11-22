@@ -3,6 +3,9 @@
 import { useEffect, useState } from "react";
 import styles from "./cocinasoldati.module.css";
 import { useSocket } from "@/hooks/socket";
+import Score from '@/components/Score';
+import { useRouter } from 'next/navigation';
+
 
 
 export default function cocinaLogica() {
@@ -13,7 +16,12 @@ export default function cocinaLogica() {
     const [isChocolateSelected, setIsChocolateSelected] = useState(false);
     const [budinType, setBudinType] = useState(null); // "vainilla" o "chocolate"
     const [isBudinFinalSelected, setIsBudinFinalSelected] = useState(false); // Estado para mostrar la flecha
+    const [score, setScore] = useState (0);
+    const [contadorBudines, setContadorBudines] = useState(0);
+    const [mensajeDiaTerminado, setMensajeDiaTerminado] = useState(false);
     const {socket, isConnected} = useSocket();
+    const router = useRouter();
+
 
     useEffect(() => {
         if (!socket) 
@@ -21,6 +29,17 @@ export default function cocinaLogica() {
 
         //Todo lo que reciba el socket se hace acá
     }, [socket,isConnected]);
+
+    useEffect(() => {
+        if (contadorBudines >= 6) {
+            setMensajeDiaTerminado(true);
+            // Espera 8 segundos 
+            setTimeout(() => {
+                router.push('/pages/Liniers/cocina');
+            }, 8000);
+            // Redirige cuando el score llega exactamente a 1500
+        }
+    }, [contadorBudines]);
 
     const handleBudinClick = () => {
         if (!isPlaced) {
@@ -70,11 +89,15 @@ export default function cocinaLogica() {
         setIsBudinFinalSelected(false); // Oculta el budín cuando se hace clic en la flecha
         setIsCooked(false);
         socket.emit("budinCocina", {budin: budinType});
+        setContadorBudines(contadorBudines + 1);
+        setScore(score+100);
         setBudinType(null);
     };
 
     return (
         <div className={styles.imgSoldatiCocina} onClick={handleContainerClick}>
+        <Score score={score} />
+
             {!isCooked && (
                 <img
                     src="/objetos/budinSinCocinar.png"
@@ -89,13 +112,20 @@ export default function cocinaLogica() {
                 />
             )}
 
+            {/* Mostrar mensaje "DÍA 1 TERMINADO" cuando corresponda */}
+            {mensajeDiaTerminado && (
+                <div className={styles.diaTerminado}>
+                    <h2>¡DÍA 1 TERMINADO!</h2>
+                </div>
+            )}
+
             {isCooked && (
                 <img
                     src={
-                        budinType === "vainilla"
-                            ? "/objetos/budinLimonSoldati.png"
+                        budinType === "vainilla" 
+                            ? "/objetos/budinVainilla.png"
                             : budinType === "chocolate"
-                            ? "/objetos/budinChocolateSoldati.png"
+                            ? "/objetos/budinChocolate.png"
                             : "/objetos/budinCocido.png"
                     }
                     alt="Budin cocido"

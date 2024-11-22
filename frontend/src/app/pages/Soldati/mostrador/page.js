@@ -1,346 +1,216 @@
-"use client";
+"use client"
 
-import { useState, useEffect, useRef } from "react";
-import styles from "./mostradorsoldati.module.css";
-//import Mostrador from "@/components/Mostrador";
+import React, { useState, useEffect, useRef } from 'react';
+import Cliente from '@/components/Clientes/' // Importación del componente Clientes
+import styles from '@/app/pages/Soldati/mostrador/mostradorsoldati.module.css'; // Cambié styles por Styles para que coincida con la importación
 import Score from '@/components/Score';
-import Cliente from "@/components/Clientes";
 import { useSocket } from "@/hooks/socket";
+import { useRouter } from 'next/navigation';
 
-export default function MostradorLogica() {
+function getRandomInt(max) {
+    return Math.floor(Math.random() * max);
+}
+
+export default function Game() {
     const [score, setScore] = useState(0); // Definimos el estado para el puntaje
+    const [clientes, setClientes] = useState([]); // Lista de clientes mezclados
+    const [clienteActual, setClienteActual] = useState(null); // Cliente que se está mostrando
+    const [persianaAbierta, setPersianaAbierta] = useState(false); // Estado para la persiana
     const [showRecipeModal, setShowRecipeModal] = useState(false); // Estado para el modal de recetas
-    const [persianaAbierta, setPersianaAbierta] = useState(false);
-    const [clientes, setClientes] = useState([]); //ya mezclados
-    const { socket, isConnected } = useSocket();
-
-    // Función para abrir/cerrar el modal de recetas
-    const toggleRecipeModal = () => {
-        setShowRecipeModal(!showRecipeModal);
-    };
-
-    // Estados para el cliente 1
-    const [showImage1, setShowImage1] = useState(false);
-    const [slideIn1, setSlideIn1] = useState(false);
-    const [slideOut1, setSlideOut1] = useState(false);
-    const [showDialogue1, setShowDialogue1] = useState(false);
-    const [timeLeft1, setTimeLeft1] = useState(25);
-    const [hasReceivedFood1, setHasReceivedFood1] = useState(false);
-    const [farewellDialogue1, setFarewellDialogue1] = useState(false);
-
-    // Estados para el cliente 2
-    const [showImage2, setShowImage2] = useState(false);
-    const [slideIn2, setSlideIn2] = useState(false);
-    const [slideOut2, setSlideOut2] = useState(false);
-    const [showDialogue2, setShowDialogue2] = useState(false);
-    const [timeLeft2, setTimeLeft2] = useState(30);
-    const [hasReceivedFood2, setHasReceivedFood2] = useState(false);
-    const [farewellDialogue2, setFarewellDialogue2] = useState(false);
-
-    // Estados para el policia
-    const [showImage3, setShowImage3] = useState(false);
-    const [slideIn3, setSlideIn3] = useState(false);
-    const [slideOut3, setSlideOut3] = useState(false);
-    const [showDialogue3, setShowDialogue3] = useState(false);
-    const [timeLeft3, setTimeLeft3] = useState(5);
-    const [hasClosedPersiana, setHasClosedPersiana] = useState(false);
-    const [farewellDialogue3, setFarewellDialogue3] = useState(false);
-
-    // Estados para budin / entregar budin
-    const [budinURL, setbudinURL] = useState("/objetos/png.png");
-    const [budinEvent, setBudinEvent] = useState();
-
+    const [budinURL, setBudinURL] = useState("/objetos/png.png"); // Inicialización de budinURL
+    const [budinSeleccionado, setBudinSeleccionado] = useState(false); // Para detectar si el budín fue seleccionado
+    const [mensajeDiaTerminado, setMensajeDiaTerminado] = useState(false);
     const playImgRef = useRef(null);
     const soundRef = useRef(null);
+    const { socket, isConnected } = useSocket();
+    const router = useRouter();
+    
 
-    function getRandomInt(max) {
-        return Math.floor(Math.random() * max);
+          // Esto se ejecutará cuando cargue la página
+  if (!soundRef.current) {
+    soundRef.current = new Audio('/sound/Todo Pinta Re Mal.mp3'); // Asegúrate de que la ruta sea correcta
+  }
+
+  const handlePlayMusic = () => {
+    // Alterna entre reproducir y pausar la música
+    if (soundRef.current.paused) {
+      soundRef.current.play();
+    } else {
+      soundRef.current.pause();
     }
-
-    useEffect(() => {
-        obtenerClientesMezcladosPorNivel();
-
-    }, [])
-
-    async function obtenerClientesMezcladosPorNivel() {
-        const response = await fetch("http://localhost:4000/clientesPorEscenario?idEscenario=1", { //idFijo porque se que es el 1
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-            },
-        })
-        const clientesSinMezclar = await response.json();
-        let clientesMezclados = []
-        
-        for (let i=0; i<clientesSinMezclar.length; i++) {
-            let numeroAleatorio = getRandomInt(clientesSinMezclar.length);
-            let clienteRandom = clientesSinMezclar[numeroAleatorio];
-
-            if (clientesMezclados.includes(clienteRandom)) {
-                i--;
-            } else {
-                clientesMezclados.push(clienteRandom);
-            }
-
-
-        }
-        clientesMezclados = clientesSinMezclar;
-        setClientes(clientesMezclados); 
-    }
+  };
 
 
     useEffect(() => {
-        if (!socket)
-            return;
+        if (!socket) return;
 
         socket.on("budinMostrador", (data) => {
             let url = "/objetos/";
-            if (data.budin == "vainilla") {
-                setbudinURL(url + "budinLimonSoldati.png");
-            } else
-                setbudinURL(url + "budinChocolateSoldati.png");
-
-        })
-    }, [socket, isConnected])
-
-    // Configuración del cliente 1
-    useEffect(() => {
-        setTimeLeft1(30); // Configura el contador a 30 segundos
-
-        const showImageTimer1 = setTimeout(() => {
-            setShowImage1(true);
-            setTimeout(() => setSlideIn1(true), 100);
-        }, 4000);
-
-        const dialogueTimer1 = setTimeout(() => setShowDialogue1(true), 5000);
-
-        const countdownInterval1 = setInterval(() => {
-            setTimeLeft1(prev => {
-                if (prev > 0) return prev - 1;
-                clearInterval(countdownInterval1);
-                return 0;
-            });
-        }, 1000);
-
-        const hideImageTimer1 = setTimeout(() => {
-            if (!hasReceivedFood1) {
-                setSlideIn1(false);
-                setSlideOut1(true);
-                setShowDialogue1(false); // Oculta el diálogo cuando el cliente se va automáticamente
-                const removeImageTimer1 = setTimeout(() => setShowImage1(false), 500);
-                return () => clearTimeout(removeImageTimer1);
+            if (data.budin === "vainilla") {
+                setBudinURL(url + "budinVainilla.png");
+            } else {
+                setBudinURL(url + "budinChocolate.png");
             }
-        }, 31000);
+        });
 
         return () => {
-            clearTimeout(showImageTimer1);
-            clearTimeout(hideImageTimer1);
-            clearTimeout(dialogueTimer1);
-            clearInterval(countdownInterval1);
+            // Asegúrate de limpiar el socket cuando el componente se desmonte
+            socket.off("budinMostrador");
         };
-    }, [hasReceivedFood1]);
+    }, [socket, isConnected]);
 
-    //Configuracion Cliente 2
+    // Obtener y mezclar clientes al inicio
     useEffect(() => {
-        if (!hasReceivedFood2) {
-            const showImageTimer2 = setTimeout(() => {
-                setShowImage2(true);
-                setTimeout(() => setSlideIn2(true), 100);
+        obtenerClientesMezcladosPorNivel();
+    }, []);
 
-                // Inicializa el tiempo restante al aparecer el cliente
-                setTimeLeft2(30);
-            }, 33000);
+    // Función para obtener clientes y mezclarlos
+    async function obtenerClientesMezcladosPorNivel() {
+        try {
+            const response = await fetch("http://localhost:4000/clientesPorEscenario?idEscenario=1", {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            });
+            const clientesSinMezclar = await response.json(); // Vector de todos los clientes
+            let clientesMezclados = [];
 
-            // Mostrar diálogo después de que el cliente aparece
-            const dialogueTimer2 = setTimeout(() => setShowDialogue2(true), 34000);
+            // Mezclar clientes
+            while (clientesSinMezclar.length > 0) {
+                let numeroAleatorio = getRandomInt(clientesSinMezclar.length);
+                let clienteRandom = clientesSinMezclar.splice(numeroAleatorio, 1)[0];
+                clientesMezclados.push(clienteRandom);
+            }
 
-            // Iniciar el contador solo cuando el cliente está visible y con tiempo inicializado
-            const countdownInterval2 = setInterval(() => {
-                setTimeLeft2(prev => {
-                    if (prev > 0) return prev - 1;
-                    clearInterval(countdownInterval2); // Detiene el contador al llegar a 0
-                    return 0;
-                });
-            }, 1000);
-
-            // Configuración para ocultar el cliente después de un tiempo
-            const hideImageTimer2 = setTimeout(() => {
-                if (!hasReceivedFood2) {
-                    setSlideIn2(false);
-                    setSlideOut2(true);
-                    setShowDialogue2(false);
-                    const removeImageTimer2 = setTimeout(() => {
-                        setShowImage2(false);
-                        setShowDialogue2(false);
-                    }, 500);
-                    return () => clearTimeout(removeImageTimer2);
-                }
-            }, 61000);
-
-            return () => {
-                clearTimeout(showImageTimer2);
-                clearTimeout(hideImageTimer2);
-                clearTimeout(dialogueTimer2);
-                clearInterval(countdownInterval2);
-            };
+            setClientes(clientesMezclados); // Actualizar lista de clientes mezclados
+            if (clientesMezclados.length > 0) {
+                setClienteActual(clientesMezclados[0]); // Mostrar el primer cliente
+            }
+        } catch (error) {
+            console.error("Error al obtener clientes:", error);
         }
-    }, [hasReceivedFood2]);
+    }
 
+    const mostrarNuevoCliente = () => {
+        if (clientes.length > 1) {
+            const siguienteCliente = clientes[1];
+            setClientes((prevClientes) => prevClientes.slice(1));
+            setClienteActual(siguienteCliente);
+        } else {
+            // No hay más clientes, cerrar la persiana automáticamente
+            setClienteActual(null);
 
-    //Configuracion Cliente 3
-    useEffect(() => {
-        const showImageTimer3 = setTimeout(() => {
-            setShowImage3(true);
-            setTimeout(() => setSlideIn3(true), 100);
+            // Espera 2 segundos antes de cerrar la persiana y mostrar el mensaje
+            setTimeout(() => {
+                togglePersiana();
+                
+                // Tercer timeout aquí (por ejemplo, esperando 3 segundos más)
+                setTimeout(() => {
+                    setMensajeDiaTerminado(true); // Muestra el mensaje "DÍA 1 TERMINADO"
+                    
+                    // Espera 5 segundos y verifica el score
+                    setTimeout(() => {
+                        if (score >= 1400) {
+                            // Redirige a la nueva página si el score es igual a 1400
+                            router.push('/pages/Liniers/mostrador');
+                        } else {
+                            // Reinicia el nivel recargando la página actual
+                            window.location.reload();
+                        }
+                    }, 13000);
+                    
+                }, 8000); 
+            }, 5000);
+        }
+    };
 
-            // Inicializa el tiempo restante al aparecer el cliente
-            setTimeLeft3(5);
-        }, 50000);
-
-        const dialogueTimer3 = setTimeout(() => setShowDialogue3(true), 31000);
-
-
-        // Temporizador del policía
-        const countdownInterval3 = setInterval(() => {
-            setTimeLeft3(prev => {
-                if (prev > 0) return prev - 1;
-                clearInterval(countdownInterval3);
-                return 0;
-            });
-        }, 1000);
-
-        // Configuración para ocultar al policía
-        const hideImageTimer3 = setTimeout(() => {
-            if (showImage3 && setTimeLeft3 === 0) {
-                setSlideIn3(false);
-                setSlideOut3(true);
-                setShowDialogue3(false); // Oculta el diálogo cuando el policía se va
-                setTimeout(() => setShowImage3(false), 500); // Esconde la imagen después de la animación
-            }
-        }, 5000);
-
-        return () => {
-            clearTimeout(showImageTimer3);
-            clearInterval(countdownInterval3);
-            clearTimeout(hideImageTimer3);
-            clearInterval(countdownInterval3);
-        };
-    }, [persianaAbierta]); // El efecto se vuelve a ejecutar cuando cambia el estado de la persiana
-
-
-    // Modificación en togglePersiana para cerrar el diálogo al cerrar la cortina
+    // Función para manejar la apertura/cierre de la persiana
     const togglePersiana = () => {
-        setPersianaAbierta(!persianaAbierta);
+        setPersianaAbierta((prev) => !prev);
+    };
 
-        if (!persianaAbierta && showImage3) {
-            setSlideIn3(false);
-            setSlideOut3(true);
-            setShowDialogue3(false); // Oculta el diálogo cuando el policía se va
-            setTimeout(() => setShowImage3(false), 500); // Esconde la imagen después de la animación
+    // Función para abrir/cerrar el modal de recetas
+    const toggleRecipeModal = () => {
+        setShowRecipeModal((prev) => !prev);
+    };
+
+    // Función para manejar el clic en la imagen del budín
+    const handleBudinClick = () => {
+        if (budinURL !== 'png_vacio.png') { // Verifica que el budín no sea el PNG vacío
+            setBudinSeleccionado(true); // Marca el budín como seleccionado
         }
     };
 
-
-
-    // Función para entregar el budín al cliente
-    const handleGiveFood = (event) => {
-        //Con esto desaparece el budin
-
-        // Cambiar la aparicion del budin
-
-        if (event.target.src != "/objetos/png.png") {
-            
-            if (showImage1 && !hasReceivedFood1) {
-                setBudinEvent(event);
-                setHasReceivedFood1(true);
-            } else if (showImage2 && !hasReceivedFood2) {
-                setHasReceivedFood2(true);
-            }
+    // Función que se pasa al componente `Cliente` para manejar la entrega
+    const handlePedidoEntregado = () => {
+        // Verificamos si el cliente actual y el tipo de budín son correctos
+        if (clienteActual && validarBudin(clienteActual.budin)) {
+            // Si el budín es correcto, incrementa el score
+            setScore(score + 300);
+            console.log("Pedido entregado correctamente, +300 puntos");
+        } else {
+            // Si el budín no es correcto, se descuenta dinero
+            setScore(score - 50); // Descuento de 50 por entregar el budín incorrecto
+            console.log("Pedido incorrecto, -50 dinero");
         }
+
+        // Reseteamos el estado del budín y el cliente
+        setBudinURL('/objetos/png.png'); // Vuelve a establecer el budín a vacío
+        setClienteActual(null); // El cliente desaparece
+        setBudinSeleccionado(false); // Resetea la selección del budín
+
+        // Esperamos 5 segundos antes de mostrar un nuevo cliente
+        setTimeout(() => {
+            mostrarNuevoCliente(); // Muestra un nuevo cliente después de 5 segundos
+        }, 5000);
     };
 
-    const handleClientClick = (clientNumber) => {
-        budinEvent.target.src = "/objetos/png.png";
-        if (clientNumber === 1 && hasReceivedFood1) {
-            setTimeLeft1(0);
-            setFarewellDialogue1(true);
-            setTimeout(() => {
-                setScore(prevScore => prevScore + 50);
-                setSlideIn1(false);
-                setSlideOut1(true);
-                setShowDialogue1(false);
-                setFarewellDialogue1(false);
-                setTimeout(() => setShowImage1(false), 500);
-            }, 2000);
-        } else if (clientNumber === 2 && hasReceivedFood2) {
-            setTimeLeft2(0);
-            setFarewellDialogue2(true);
-            setTimeout(() => {
-                setScore(prevScore => prevScore + 30);
-                setSlideIn2(false);
-                setSlideOut2(true);
-                setShowDialogue2(false);
-                setFarewellDialogue2(false);
-                setTimeout(() => setShowImage2(false), 500);
-            }, 2000);
-        }
-    };
+    // Función para validar si el budín seleccionado es el correcto
+    const validarBudin = (tipoBudinCliente) => {
+        // Imprimimos el valor de budinURL para asegurarnos de qué contiene
+        console.log("Valor de budinURL:", budinURL);
 
+        // Comparamos directamente el tipo de budín del cliente con la URL del budín
+        if (tipoBudinCliente === "chocolate" && budinURL === "/objetos/budinChocolate.png") {
+            console.log("Budín correcto: Chocolate");
+            return true;
+        } else if (tipoBudinCliente === "vainilla" && budinURL === "/objetos/budinVainilla.png") {
+            console.log("Budín correcto: Vainilla");
+            return true;
+        }
+
+        console.log("Budín incorrecto");
+        return false;
+    };
 
     return (
         <div className={styles.imgSoldati}>
             <Score score={score} />
-            
-            {
-                clientes.map(cliente => {
-                    <Cliente src={cliente.skin} 
-                    alt={cliente.nombre}
-                    
-                    ></Cliente>
-                    
-                })
-            }
 
-            <Cliente
-                src="/clientes/hombreSucio.png"
-                alt="Cliente 1"
-                dialogue={farewellDialogue1 ? "Gracia loco!" : "TENGO HAMBREEE, DAME UN BUDÍN DE CHOCOLATE!"}
-                showImage={showImage1}
-                slideIn={slideIn1}
-                slideOut={slideOut1}
-                showDialogue={showDialogue1 || farewellDialogue1}
-                timeLeft={timeLeft1}
-                onClientClick={() => handleClientClick(1)}
-            />
-
-            <Cliente
-                src="/clientes/hombreChorro.png"
-                alt="Cliente 2"
-                dialogue={farewellDialogue2 ? "Tardaste una banda amigo, vuelvo a la noche" : "¡Dame un budín de vainilla, rápido!"}
-                showImage={showImage2}
-                slideIn={slideIn2}
-                slideOut={slideOut2}
-                showDialogue={showDialogue2 || farewellDialogue2}
-                timeLeft={timeLeft2}
-                onClientClick={() => handleClientClick(2)}
-            />
-
-            <Cliente
-                src="/clientes/Policia.png"
-                alt="Cliente 3"
-                dialogue={farewellDialogue3 ? "Ya te voy a agarrar!" : "¡Necesito ver los papeles del negocio!"}
-                showImage={showImage3}
-                slideIn={slideIn3}
-                slideOut={slideOut3}
-                showDialogue={showDialogue3 || farewellDialogue3}
-                timeLeft={timeLeft3}
-            />
-
+            {clienteActual && (
+                <Cliente
+                    cliente={clienteActual}
+                    onPedidoEntregado={handlePedidoEntregado}
+                    budinSeleccionado={budinSeleccionado}
+                    resetBudinSeleccionado={() => setBudinSeleccionado(false)}
+                    budinURL={budinURL}
+                    persianaAbierta={persianaAbierta}
+                    togglePersiana={togglePersiana}
+                />
+            )}
 
             {/* Botón de recetas */}
             <button onClick={toggleRecipeModal} className={styles.openModalButton}>
                 Recetas
             </button>
+
+            {/* Mostrar mensaje "DÍA 1 TERMINADO" cuando corresponda */}
+            {mensajeDiaTerminado && (
+                <div className={styles.diaTerminado}>
+                    <h2>¡DÍA 1 TERMINADO!</h2>
+                </div>
+            )}
 
             {/* Modal de recetas */}
             {showRecipeModal && (
@@ -363,12 +233,11 @@ export default function MostradorLogica() {
                 </div>
             )}
 
-
             <img
                 src={budinURL}
                 alt="Budín"
                 className={styles.budinImageContainer}
-                onClick={handleGiveFood}
+                onClick={handleBudinClick}
             />
 
             {/* Radio */}
@@ -378,6 +247,7 @@ export default function MostradorLogica() {
                 src="/objetos/Radio Soldati.png"
                 id="playImg"
                 alt="Play Radio"
+                onClick={handlePlayMusic}
             />
 
             <img
@@ -386,7 +256,7 @@ export default function MostradorLogica() {
                 className={styles.imgCajaRegistradora}
             />
 
-            <div>
+            <div className={styles.persianaContainer}>
                 {/* Persiana */}
                 <div className={`${styles.persiana} ${persianaAbierta ? styles.abierta : ""}`}></div>
 
@@ -394,12 +264,8 @@ export default function MostradorLogica() {
                 <button className={styles.persianaButton} onClick={togglePersiana}>
                     {persianaAbierta ? "Subir Persiana" : "Bajar Persiana"}
                 </button>
-
-                {/* Contenido restante */}
-                <div className={styles.imgSoldati}>
-                    {/* Otros elementos de tu componente */}
-                </div>
             </div>
         </div>
     );
-}
+
+};    

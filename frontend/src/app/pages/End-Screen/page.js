@@ -1,11 +1,13 @@
-import { useRouter } from 'next/router';
-import styles from './EndScreen.module.css';
+"use client"
+
+import { useRouter } from 'next/navigation';
+import styles from './endScreen.module.css';
 
 export default function EndScreen() {
   const router = useRouter();
 
   const handleRestart = () => {
-    router.push('/'); // Redirige al inicio del juego
+    router.push('/sala'); // Redirige al inicio del juego
   };
 
   return (

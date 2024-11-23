@@ -25,21 +25,40 @@ export default function cocinaLogica() {
 
 
     useEffect(() => {
-        if (!socket) 
-            return;
+        if (!socket) return;
 
-        //Todo lo que reciba el socket se hace acá
-    }, [socket,isConnected]);
+        // Escucha del evento 'scoreCocina' y actualiza el estado del score
+        socket.on("scoreCocina", (data) => {
+            if (data.score !== 0) {
+                setScore(data.score);
+            }
+        });
+
+        // Cleanup al desmontar el componente
+        return () => {
+            socket.off("scoreCocina");
+        };
+    }, [socket, isConnected]);
 
     useEffect(() => {
-        if (contadorBudines >= 12) {
-            setMensajeDiaTerminado(true);
-            // Espera 8 segundos 
+        if (score >= 2900) {
+            // Tercer timeout aquí (por ejemplo, esperando 3 segundos más)
             setTimeout(() => {
-                router.push('/pages/Puerto_Madero/cocina');
+                setMensajeDiaTerminado(true); // Muestra el mensaje "DÍA 1 TERMINADO"
+
+                // Espera 5 segundos y verifica el score
+                setTimeout(() => {
+                    // Redirige a la nueva página si el score es igual a 1400
+                    router.push('/pages/Puerto_Madero/cocina');
+                }, 13000);
+
             }, 8000);
+            // Redirige cuando el score llega exactamente a 1500
+        } else {
+            // Reinicia el nivel recargando la página actual
+            window.location.reload();
         }
-    }, [contadorBudines]);
+    }, [score]);
 
     const handleBudinClick = () => {
         if (!isPlaced) {

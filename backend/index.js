@@ -154,6 +154,12 @@ io.on("connection", (socket) => {
 		io.emit('budinMostrador', {budin: data.budin});
 	});
 
+	socket.on('scoreMostrador', data => {
+		console.log(data);
+		//Hay que hacer que solo se lo mande al de la sala
+		io.emit('scoreCocina', {score: data.score});
+	});
+
 	socket.on('disconnect', () => {
 		console.log("Disconnect");
 	})

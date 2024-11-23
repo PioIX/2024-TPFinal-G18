@@ -39,6 +39,14 @@ export default function Game() {
     }
   };
 
+  useEffect(() => {
+    if (!socket) return;
+
+    // Emitir el score actualizado al servidor
+    socket.emit('scoreMostrador', { score });
+
+}, [score, socket]);
+
     
 
 

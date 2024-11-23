@@ -16,30 +16,48 @@ export default function cocinaLogica() {
     const [isChocolateSelected, setIsChocolateSelected] = useState(false);
     const [budinType, setBudinType] = useState(null); // "vainilla" o "chocolate"
     const [isBudinFinalSelected, setIsBudinFinalSelected] = useState(false); // Estado para mostrar la flecha
-    const [score, setScore] = useState (0);
+    const [score, setScore] = useState(0);
     const [contadorBudines, setContadorBudines] = useState(0);
     const [mensajeDiaTerminado, setMensajeDiaTerminado] = useState(false);
-    const {socket, isConnected} = useSocket();
+    const { socket, isConnected } = useSocket();
     const router = useRouter();
 
 
     useEffect(() => {
-        if (!socket) 
-            return;
+        if (!socket) return;
 
-        //Todo lo que reciba el socket se hace acá
-    }, [socket,isConnected]);
+        // Escucha del evento 'scoreCocina' y actualiza el estado del score
+        socket.on("scoreCocina", (data) => {
+            if (data.score !== 0) {
+                setScore(data.score);
+            }
+        });
+
+        // Cleanup al desmontar el componente
+        return () => {
+            socket.off("scoreCocina");
+        };
+    }, [socket, isConnected]);
 
     useEffect(() => {
-        if (contadorBudines >= 6) {
-            setMensajeDiaTerminado(true);
-            // Espera 8 segundos 
+        if (score >= 1400) {
+            // Tercer timeout aquí (por ejemplo, esperando 3 segundos más)
             setTimeout(() => {
-                router.push('/pages/Liniers/cocina');
+                setMensajeDiaTerminado(true); // Muestra el mensaje "DÍA 1 TERMINADO"
+
+                // Espera 5 segundos y verifica el score
+                setTimeout(() => {
+                    // Redirige a la nueva página si el score es igual a 1400
+                    router.push('/pages/Liniers/cocina');
+                }, 13000);
+
             }, 8000);
             // Redirige cuando el score llega exactamente a 1500
+        } else {
+            // Reinicia el nivel recargando la página actual
+            window.location.reload();
         }
-    }, [contadorBudines]);
+    }, [score]);
 
     const handleBudinClick = () => {
         if (!isPlaced) {
@@ -88,15 +106,14 @@ export default function cocinaLogica() {
     const handleArrowClick = () => {
         setIsBudinFinalSelected(false); // Oculta el budín cuando se hace clic en la flecha
         setIsCooked(false);
-        socket.emit("budinCocina", {budin: budinType});
+        socket.emit("budinCocina", { budin: budinType });
         setContadorBudines(contadorBudines + 1);
-        setScore(score+100);
         setBudinType(null);
     };
 
     return (
         <div className={styles.imgSoldatiCocina} onClick={handleContainerClick}>
-        <Score score={score} />
+            <Score score={score} />
 
             {!isCooked && (
                 <img
@@ -122,11 +139,11 @@ export default function cocinaLogica() {
             {isCooked && (
                 <img
                     src={
-                        budinType === "vainilla" 
+                        budinType === "vainilla"
                             ? "/objetos/budinVainilla.png"
                             : budinType === "chocolate"
-                            ? "/objetos/budinChocolate.png"
-                            : "/objetos/budinCocido.png"
+                                ? "/objetos/budinChocolate.png"
+                                : "/objetos/budinCocido.png"
                     }
                     alt="Budin cocido"
                     className={styles.imgBudinCocido}
@@ -163,7 +180,7 @@ export default function cocinaLogica() {
                 />
             )}
 
-             {/*
+            {/*
             <img
                 src="/objetos/cintaMecanica.png"
                 alt="Cinta Mecanica"
@@ -174,4 +191,4 @@ export default function cocinaLogica() {
     );
 }
 
-           
+

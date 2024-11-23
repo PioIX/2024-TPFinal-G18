@@ -105,3 +105,18 @@
     cursor: pointer;
     z-index: 40;
 }
+
+
+.diaTerminado {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 20px;
+    border-radius: 10px;
+    font-size: 2rem;
+    text-align: center;
+    z-index: 1000; /* Asegúrate de que esté por encima de otros elementos */
+}
